@@ -1,8 +1,85 @@
-# Analysis plan
+# Analysis plan: judge-meta-eval
 
-*Written before any experiment code, per CLAUDE.md. Needs approval before the
-pipeline is built. No API calls, no dataset downloads, and no results exist
-yet -- everything below is a proposal.*
+**Status: pre-registered design. Published 2026-09-11. No results exist yet.**
+
+## What this is
+
+This is the analysis plan for a small study on LLM-as-judge trustworthiness,
+published before any experiment has produced a result. The question:
+
+> How much can an LLM judge be trusted to score grounded-generation quality,
+> and which judge biases actually move the score enough to change a ranking
+> between two responses -- not just detectably shift a number?
+
+This matters because LLM judges are increasingly used as a cheap substitute
+for human review at scale, and "the judge mostly agrees with humans on
+average" is a different claim from "the judge is safe to trust on the
+comparisons that matter." A bias that never flips a ranking is a footnote;
+one that does changes which model or response actually gets shipped.
+
+**Why this is published now, not after results.** Every design decision
+below -- the dataset, the models, the sample size, the pairing scheme, the
+cost -- was made and revised before a single result existed to shape it.
+Publishing the plan at this stage is the only way a reader can verify that
+rather than take it on faith. Two open questions are called out explicitly
+below, with the concrete mechanism that resolves (or will resolve) each --
+they are not buried in Limitations where a bad number could be quietly
+absorbed after the fact. The decisions log at the end records what changed
+and why, as it happened, rather than smoothing the history into a clean
+story in hindsight.
+
+No results exist yet. RESULTS.md says so explicitly and will continue to
+until there's something real to report.
+
+## Open questions right now
+
+Two things are unresolved as of this publish.
+
+### 1. Length/condition confound -- unresolved, main generation run held
+
+The 40 real contamination-probe calls (condition (d), Sonnet 5) came back
+averaging 409 output tokens -- far more than assumed, and enough to raise a
+real question: does response length vary systematically BY CONDITION (for
+instance, if the "strong" condition happens to share a model with the
+"ungrounded" condition, is it also systematically the longest one)? If so,
+a judge preferring longer responses becomes hard to distinguish from a
+judge tracking the intended quality signal -- the same confound structure
+already found and addressed for self-preference (see the decisions log),
+now possibly present for verbosity too, one of the three biases this study
+measures.
+
+This is genuinely open, not resolved-but-unwritten. Real output-length data
+exists for only one of the four generation conditions so far (the disjoint
+contamination-probe items, not the 200-item labeling pool). Settling it
+requires measuring length across all four conditions on real data, then
+choosing between an analysis-side correction -- length as a covariate in
+the judge-agreement analysis, or a matched-length subsample specifically
+for the verbosity experiment -- each with a real cost in interpretability
+that hasn't been picked yet. The fix will not be a length constraint added
+to the generation prompts: the point of this study is to evaluate what
+these models actually produce, not a constrained version of them.
+
+**The main 800-call generation run is held until this is settled** -- not
+because the answer is known to be bad, but because it isn't known at all
+yet, and this project does not spend on the strength of an unchecked
+assumption twice in the same week.
+
+### 2. Contamination probe -- generated, not yet hand-scored
+
+40 items, disjoint from the 200-item labeling pool, generated under the
+passage-withheld condition and awaiting hand-scoring for whether the model
+already knew the answer without the passage (src/contamination_probe.py;
+full design and why it has to be hand-scored rather than automated is in
+Confounds, below).
+
+**The decision rule, fixed before any score exists:** below 25%
+memorization, the design proceeds as-is and the rate gets reported in
+Limitations; at or above 25%, the ungrounded condition changes before the
+main run, not after. That threshold was set when the probe was designed,
+before a single item was scored. This is the part of this document doing
+the most work -- it's the one place a bad number can't be quietly absorbed
+into a footnote after the fact. It either passes or it changes the design,
+decided in advance of seeing which.
 
 ## Question
 
@@ -648,3 +725,85 @@ than getting discovered while drafting RESULTS.md: a per-pair-type
 self-preference number that isn't statistically distinguishable from 50/50
 must be reported as "not detectable at this n," never as "no
 self-preference found."
+
+---
+
+## Decisions log
+
+Chronological. Each entry is a design that changed because something got
+checked, not because of taste -- that's the point of keeping this log
+instead of quietly editing history.
+
+**2026-09-07 -- Dataset and generation design first written.** RAGTruth
+(MIT) chosen over ExpertQA (no bundled source passages) and CRAG (mock-API
+dependency, unclear redistribution terms). Original response-generation
+design: 2 models (Sonnet 5, Haiku 4.5), 3 conditions.
+
+**2026-09-07 -- 2 models flagged as not a real spread, and worse, both
+Anthropic.** Revised to 3 models / 4 conditions, adding GPT-5.4 mini,
+specifically so Phase 3's self-preference test would have a cross-family
+response to work with at all.
+
+**2026-09-08 -- Self-preference confound found: GPT-5.4 mini is plausibly
+just the weaker model, not evidence of family bias.** Investigated what a
+"capability-matched" fix would cost. Checking OpenAI's docs directly rather
+than trusting price as a proxy: a same-priced model (gpt-5.6-terra) is
+documented by OpenAI itself as mini-tier, not matched at all -- price
+turned out not to be a reliable cross-vendor capability scale. Added a
+gpt-5.6-sol flagship bracket ($0.77) to test whether judge preference
+reverses when the capability gap reverses, plus a free check using the
+human win-rate on the existing pairs. The scope limit is stated in this
+plan in these exact words: **"this design detects a difference but can't
+attribute it."**
+
+**2026-09-08 -- Variance subset added: a second seed at temperature 0.7.**
+Priced at $0.28. Flagged honestly at the time as measuring "sampling
+variance at temperature 0.7," not the variance of the actual temperature-0
+labeled dataset.
+
+**2026-09-09 -- That variance subset replaced, not just re-flagged.**
+An honest caveat doesn't fix a subset measuring the wrong thing --
+METHODOLOGY.md's top-ranked risk (format/harness sensitivity, per this
+project's own Unit 1 notes) was the actual unmeasured gap. Replaced with a
+format-variance subset: the same items regenerated under 2 alternate,
+semantically equivalent prompt formats. Pair b_c (GPT-5.4 mini vs. Haiku
+4.5) added the same day at zero extra generation cost -- both models are
+already generated for every item regardless of pairing, so a 5th pair type
+only redistributes which existing responses get labeled. A power analysis
+was added: self-preference at n=40 per pair type needs a ~72/28 split to
+detect at 80% power, computed directly, not estimated by feel.
+
+**2026-09-09 -- Contamination check restructured: the hand-scored probe
+made explicitly primary, the mechanical regex flagger made explicitly
+secondary.** The flagger only catches verbatim token leakage; a model that
+memorized a fact more often restates it in its own words. A low flag rate
+is close to uninformative on its own and is never allowed to be reported
+as if it meant low contamination.
+
+**2026-09-10 -- Contamination probe run for real. Three SDK bugs found by
+actually executing it, not by review.** contamination_probe.py never
+called load_dotenv() itself; Sonnet 5 rejects the `temperature` parameter
+outright (removed from the current API, not defaulted); the pinned Haiku
+model ID carried a stale date suffix. All three had passed code review and
+every test written so far -- none of that surfaces a bug that only a real
+API call exposes. Fixed, with a regression test added for the
+load_dotenv gap specifically.
+
+**2026-09-10 -- 2.7x cost miss found in the same real run.** The 40 real
+calls averaged 409 output tokens against a 150-token flat assumption used
+everywhere in the cost model. Not a rounding error -- Sonnet 5 writes full
+markdown-formatted answers by default even on a plain, unconstrained
+prompt. Every cost figure in this document that depends on output length
+was recomputed against the measured value. Phase 3's judge-call estimates
+are flagged as carrying the same unverified assumption, with a plan to
+verify them the same way -- a minimal real judge call -- before that
+spending starts, and to force brevity explicitly in the judge prompt
+(fine for a judge; not fine for the responses under study).
+
+**2026-09-10 -- Length/condition confound noticed, unresolved.** The same
+409-token measurement raised the question of whether response length
+varies systematically by generation condition, which would confound the
+verbosity-bias measurement -- and possibly compound the self-preference
+confound above, if the same model family is both the "strong" condition
+and the longest one. Open as of this publish; see Open Questions, above.
+The main 800-call generation run is held pending resolution.

@@ -1,9 +1,10 @@
 # Results
 
-*No results exist yet. This repo is in the scaffolding phase -- nothing below
-has been run.*
+*No results exist yet. The analysis plan is published -- see ANALYSIS_PLAN.md
+-- with two open questions still unresolved and the main generation run held
+pending one of them. Nothing below has been run.*
 
-<!-- status: scaffolded -->
+<!-- status: plan published, results pending -->
 <!-- headline: not yet available -->
 
 ## Headline result
