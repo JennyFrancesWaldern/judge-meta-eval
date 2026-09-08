@@ -98,9 +98,15 @@ the first few practice items.
   itself, only anchoring to the human labels to say which direction is
   "toward" or "away from" the human-preferred response. Those can run at
   much larger n (hundreds to low thousands of judge calls) cheaply, since
-  they don't consume more of my labeling time. So: human-agreement estimate
-  is the tightly-constrained number; bias-flip-rate estimates can be much
-  better powered.
+  they don't consume more of my labeling time -- **but only when POOLED
+  across all 200 items.** The moment a comparison is scoped to a single
+  pair type (self-preference is inherently scoped this way -- there's no
+  pair without a cross-family model to test it on), it's back down to
+  n=40-80 regardless of how cheap judge calls are, because that's how many
+  human-anchored items exist for that specific pair type. See "Power at
+  n=40 per pair type," below, for exact numbers -- some of these
+  comparisons are meaningfully underpowered, and that's decided now, before
+  labeling, not discovered in the writeup.
 
 **Variance subset, revised 2026-09-09 -- format, not seed.** The original
 version of this note (2026-09-08) proposed a second seed at temperature 0.7
@@ -168,61 +174,65 @@ much, which the original plan could only assert, not show.
   passage is only a valid "ungrounded" manipulation if the model doesn't
   already know the answer. For a memorized item, (d) silently stops being
   ungrounded and the condition becomes a mix of genuinely-degraded and
-  secretly-fine responses labeled as one thing. Concrete check, run before
-  the full spend (src/contamination_probe.py, not yet executed): generate
-  condition (d) only, on 40 items disjoint from the 200-item labeling pool
-  (so nothing here is later shown to me during blind labeling), and I score
-  each by hand for whether the withheld-passage answer is still correct --
-  not with an automated scorer, since we don't have a validated one yet and
-  using one here would be circular. Decision rule, fixed in advance: below
-  25% memorization, proceed and report the rate in Limitations; at or above
-  25%, the ungrounded condition changes before the full run rather than
-  proceeding with a footnote. Cost: 40 calls, ~$0.06.
+  secretly-fine responses labeled as one thing.
+
+  **Two signals exist for this, and they are not interchangeable. Ordered
+  here by which one actually gets trusted, not by which is cheaper.**
+
+  **Primary measure: the 40-item hand-scored probe.** src/contamination_probe.py
+  generates condition (d) only, on 40 items disjoint from the 200-item
+  labeling pool (so nothing here is later shown to me during blind
+  labeling), and I score each by hand for whether the withheld-passage
+  answer is still substantively correct -- restated in the model's own
+  words counts, not just verbatim recall. This is the only signal in this
+  project that can catch paraphrased memorization, which is the more
+  likely form it takes: a model that "knows" a fact from pretraining
+  answers with it in its own words far more often than by reciting the
+  source passage verbatim. Not scored by an automated judge, since we have
+  no validated one yet and using one here would be circular. Decision
+  rule, fixed in advance: below 25% memorization, proceed and report the
+  rate in Limitations; at or above 25%, the ungrounded condition changes
+  before the full run rather than proceeding with a footnote. Cost: 40
+  calls, ~$0.06. **This is the number that decides whether the full run
+  happens as designed.**
+
+  **Secondary, supplementary signal: the mechanical flagger.** After the
+  probe clears (or the design is revised), src/memorization_flagging.py
+  runs a regex check against the MAIN 200-item pool's own condition-(d)
+  responses -- already generated as part of the 800-call core run, so this
+  costs nothing extra, and no human ever looks at the withheld-passage
+  text to produce it, so it never touches blinding. **What it can and
+  cannot detect, stated together with its result, not separately:** it
+  only catches VERBATIM leakage of distinctive tokens -- a phone number, a
+  dollar figure, a proper-noun phrase reproduced exactly. A model that
+  memorized a fact and restated it in its own words -- the more common
+  failure mode, per the primary probe's design above -- produces no
+  matching token and the flagger sees nothing. **A low flag rate is
+  therefore close to uninformative on its own** and must never be reported
+  as "contamination is low" -- only as "verbatim leakage is low," with the
+  paraphrase blind spot named in the same sentence. Its only legitimate
+  use in this project is a per-item sensitivity check (does excluding the
+  handful of verbatim-leak items change the headline result), never as a
+  substitute for, or a more reassuring restatement of, the hand-scored
+  rate above.
+
+  **Revised plan below 25% (from the hand-scored probe):** proceed with
+  the full run, AND run the mechanical flagger against the real 200-item
+  pool once condition (d) exists, AND report the primary analysis (full
+  200 items) alongside a sensitivity check with flagged items removed --
+  clearly labeled as catching only the verbatim-leak subset, not a
+  complete accounting of memorization. Flagged items are never silently
+  excluded pre-labeling -- excluding based on an imperfect heuristic
+  before seeing the data risks a selection bias of its own, and it would
+  shrink the labeling investment below the n the sample-size section
+  already sized carefully.
 
   A second, distinct contamination question -- can the generation models
   recite the passages verbatim, which would inflate the *grounded*
   conditions (a, b, c) rather than invalidate the ungrounded one -- remains
-  open and is not covered by this probe. Worth a similar cheap check before
-  trusting any "grounded" framing, but is not gating the current spend
-  decision the way the (d)-condition check is.
-
-  **The rate-vs-flags gap, addressed 2026-09-09.** The probe runs on items
-  disjoint from the 200-item labeling pool specifically to protect
-  blinding -- but that means it produces an overall RATE with no way to
-  say which of the 200 actual labeling items are contaminated. At, say,
-  15% (below the 25% threshold), the honest position was going to be
-  "proceed knowing roughly 15% of condition (d) isn't really ungrounded,
-  with no way to tell which items." That's not good enough on its own.
-
-  There is a way to do better without compromising blinding: a mechanical,
-  code-only check (src/memorization_flagging.py) run against the MAIN
-  pool's own condition-(d) responses -- already generated as part of the
-  800-call core run, so this costs nothing extra. It extracts distinctive,
-  hard-to-guess facts from each passage (phone numbers, dollar amounts,
-  percentages, 4+ digit numbers, multi-word proper-noun phrases) and checks
-  whether they appear verbatim in that item's own withheld-passage
-  response. No human ever looks at the withheld-passage text to produce
-  this flag -- it's regex-based text matching, not a judgment call -- so it
-  never touches what I see during labeling. This is different in kind from
-  the earlier rejection of an automated judge for the *general* research
-  question (that would be circular, since we have no validated judge);
-  checking for a literal phone number leaking through has no such
-  circularity problem.
-
-  Honest limits: this catches the easy, distinctive cases and will miss
-  memorization of diffuse, non-numeric content -- it under-counts, it
-  doesn't over-count, and it is a supplement to the disjoint-sample rate,
-  not a replacement for it.
-
-  **Revised plan below 25%:** proceed with the full run, AND run the
-  mechanical flag against the real 200-item pool once condition (d) exists,
-  AND report both the primary analysis (full 200 items) and a sensitivity
-  check with flagged items removed. That is a real answer with a number
-  attached, not a footnote saying contamination might be a problem.
-  Flagged items are never silently excluded pre-labeling -- excluding
-  based on an imperfect heuristic before seeing the data risks a selection
-  bias of its own, and it would shrink the labeling investment below the
-  n the sample-size section already sized carefully.
+  open and is not covered by either signal above. Worth a similar cheap
+  check before trusting any "grounded" framing, but is not gating the
+  current spend decision the way the (d)-condition check is.
 - **Single labeler.** See scope limit above -- no inter-rater reliability is
   possible here, only intra-rater.
 - **Quality vs. groundedness conflation.** A genuinely weaker model's
@@ -499,3 +509,100 @@ rubric output ~500 tokens -- all flat assumptions, labeled as such).
 Call it **under $12 all-in** with a buffer, and I will still ask before
 Phase 3 spending starts, with real numbers checked the same way these were
 -- this table is a planning estimate, not a pre-authorization.
+
+### 5. Power at n=40 per pair type (added 2026-09-09)
+
+Computed directly (normal-approximation proportion tests, alpha=0.05
+two-sided, 80% power -- standard formulas, not simulated, verified by
+script), not estimated by feel. Two kinds of comparison need to be told
+apart: a **one-sample test** (is this cell's rate different from a fixed
+reference, e.g. "is judge preference different from a fair 50/50 coin")
+and a **two-sample test** (is cell A's rate different from cell B's rate).
+Phase 3's per-pair-type comparisons are almost all the first kind.
+
+**Self-preference (one-sample vs. a 50/50 null) -- the sharpest case:**
+
+| n | Minimum detectable skew | Practical meaning |
+|---|---|---|
+| 40 (one pair type: b_c alone, or a_b alone, or b_d alone) | 22.1pp | Only a ~72/28 split or worse is detectable. A real-but-moderate 60/40 skew will NOT reach significance. |
+| 80 (bracket-eligible items, a vs {b,e} pooled) | 15.7pp | Still needs ~66/34 or worse. |
+| 120 (a_b + b_d + b_c pooled, ignoring which specific pairing) | 12.8pp | Needs ~63/37 or worse. |
+| 200 (hypothetical, if every item were cross-family) | 9.9pp | Not achievable here -- only 120 of 200 items touch a cross-family comparison at all. |
+
+**This is the underpowered comparison, named plainly: self-preference at
+the per-pair-type level (b_c alone, or a_b alone) cannot detect anything
+short of a dramatic, ~70/30-or-worse split.** A moderate but still
+practically concerning skew -- 60/40, say -- reads as statistically null
+at n=40, not because there's no effect, but because the design can't see
+it at that grain. b_c specifically, the pair added this round precisely
+*because* it's the sharpest self-preference test, inherits this limit like
+every other single-pair-type cell.
+
+**Flip rate / verbosity effect (one-sample vs. a small baseline, ~10%):**
+
+| n | Minimum detectable rate above baseline | 
+|---|---|
+| 40 (single pair type) | 13.3pp (detect >= ~23%) |
+| 80 | 9.4pp (detect >= ~19%) |
+| 200 (pooled, ignoring pair type) | 5.9pp (detect >= ~16%) |
+
+Pooled at n=200, these are reasonably powered for a "does this bias exist
+at a rate that would change a ranking decision" question -- which is the
+question this project actually cares about (see "What I'm measuring,"
+above: a bias that never flips anything is a footnote). Broken down by
+pair type, they fall into the same 40-80 range as self-preference above.
+
+**Between-cell comparisons (two-sample, e.g. "is pair-type A's flip rate
+different from pair-type B's"):** 28.7pp at n=40 per arm, 20.3pp at n=80.
+Coarser than either one-sample case above -- this project cannot make
+fine-grained claims about which specific pair type is most bias-prone.
+
+**Mitigation deltas** (swap-averaging, rubric decomposition,
+reference-guided grading): evaluated the same way as judge-human
+agreement -- kappa against the 200 human labels. Pooled at n=200, the
+existing +/-0.08-0.12 kappa CI (see Sample size, above) applies; a
+mitigation's improvement needs to move kappa by roughly that much to be
+distinguishable from noise. Per-pair-type mitigation effects inherit the
+same n=40-80 limits as above and are not separately powered.
+
+**What's underpowered, stated plainly:** every PER-PAIR-TYPE breakdown
+(self-preference in b_c alone, or a_b alone; flip rate specifically within
+one pair type; a mitigation's effect measured only on one pair type) is
+underpowered for anything but a large effect. Every POOLED measure (flip
+rate and verbosity effect across all 200; mitigation deltas against the
+full kappa) is reasonably powered for effects in the 6-10pp / kappa-CI
+range, which is closer to the size of effect this project would actually
+act on.
+
+**Options, and the call:**
+
+1. *More items* -- doesn't fix the sharpest case. Going from 40 to 50 per
+   cell (the original 4-pair-type design) only moves the self-preference
+   MDE from 22.1pp to 19.8pp -- still requires a ~70/30 split. Getting to a
+   genuinely well-powered single-pair-type self-preference test (say,
+   MDE ~10pp) would need n≈200 for that ONE pair type alone, which is the
+   entire labeling budget spent on one comparison. Not worth it.
+2. *Fewer pair types* -- dropping b_c and returning to 4 types at 50 each
+   has the same problem: it doesn't rescue per-cell power (above), so it
+   trades away a free, genuinely matched comparison for a power gain that
+   doesn't materialize. **Recommendation: don't drop b_c.**
+3. *Accept descriptive status where it's actually true, and pool where
+   pooling is honest* -- this is the plan going forward:
+   - **Inferential claims** (adequately powered): flip rate and verbosity
+     effect POOLED across all 200 items; a POOLED self-preference estimate
+     across all cross-family-touching comparisons (a_b + b_d + b_c, n=120,
+     MDE 12.8pp) that asks "does the judge show a family preference at
+     all," without asking which specific pairing drives it; mitigation
+     deltas against the full-sample kappa.
+   - **Descriptive only, stated as such wherever reported**: any
+     per-pair-type breakdown, including b_c alone, a_b alone, and b_d
+     alone. These get reported as observed rates with their (wide) CIs
+     shown, explicitly labeled as not powered to distinguish from chance
+     at this n, not quietly presented alongside the pooled inferential
+     numbers as if they carried the same weight.
+
+This is written down now so it constrains the eventual write-up rather
+than getting discovered while drafting RESULTS.md: a per-pair-type
+self-preference number that isn't statistically distinguishable from 50/50
+must be reported as "not detectable at this n," never as "no
+self-preference found."
