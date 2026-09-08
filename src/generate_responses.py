@@ -48,7 +48,7 @@ DEFAULT_PROMPT_FORMAT = "plain_v1"
 CONDITIONS = {
     "a": {"provider": "anthropic", "model": "claude-sonnet-5", "passage_included": True, "label": "strong"},
     "b": {"provider": "openai", "model": "gpt-5.4-mini", "passage_included": True, "label": "moderate_cross_family"},
-    "c": {"provider": "anthropic", "model": "claude-haiku-4-5-20251001", "passage_included": True, "label": "weak"},
+    "c": {"provider": "anthropic", "model": "claude-haiku-4-5", "passage_included": True, "label": "weak"},
     "d": {"provider": "anthropic", "model": "claude-sonnet-5", "passage_included": False, "label": "ungrounded"},
 }
 
@@ -130,7 +130,15 @@ FORMAT_VARIANTS = {
     "qa_style_v1": _qa_style_v1,
 }
 
-ESTIMATED_OUTPUT_TOKENS = 150  # the response doesn't exist yet; this stays a flat assumption
+# Was 150 (a guess). Measured 2026-09-10 from the 40 real contamination-probe
+# calls (condition d, Sonnet 5): avg 409 est. tokens, range 210-594 -- Sonnet 5
+# writes full markdown-formatted answers by default, not terse extractive
+# ones, even on an open "answer from your own knowledge" prompt. Grounded
+# conditions (a, b, c) haven't been measured for real yet and may differ
+# (the "use only the passage" instruction is more constraining), but 150 is
+# now known to be the wrong order of magnitude for at least one condition,
+# so this uses the measured value everywhere pending real data on the rest.
+ESTIMATED_OUTPUT_TOKENS = 410
 
 # USD per million tokens (input, output). Checked directly against
 # claude.com/pricing and developers.openai.com/api/docs/pricing on
@@ -138,7 +146,7 @@ ESTIMATED_OUTPUT_TOKENS = 150  # the response doesn't exist yet; this stays a fl
 # on this if run much later; these rates change.
 PRICING_PER_M = {
     "claude-sonnet-5": (2.0, 10.0),
-    "claude-haiku-4-5-20251001": (1.0, 5.0),
+    "claude-haiku-4-5": (1.0, 5.0),
     "gpt-5.4-mini": (0.75, 4.50),
     "gpt-5.6-sol": (4.0, 20.0),
 }
@@ -174,6 +182,12 @@ def build_prompt(item: dict, cond: dict, prompt_format: str = DEFAULT_PROMPT_FOR
     return FORMAT_VARIANTS[prompt_format](item, cond["passage_included"])
 
 
+# Sonnet 5 (and Opus 5 / Fable 5) reject `temperature` outright (400) --
+# removed from the API, not just defaulted. Haiku 4.5 still accepts it.
+# Checked against the current Claude API reference on 2026-09-10.
+ANTHROPIC_NO_TEMPERATURE_MODELS = {"claude-sonnet-5", "claude-opus-5", "claude-fable-5", "claude-fable-5-1"}
+
+
 def call_model(provider: str, model: str, prompt: str, temperature: float) -> str:
     """Make the actual API call. Imports are lazy so dry-run and tests never
     need network access or credentials just to load this module."""
@@ -181,13 +195,23 @@ def call_model(provider: str, model: str, prompt: str, temperature: float) -> st
         import anthropic
 
         client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
-        resp = client.messages.create(
-            model=model,
-            max_tokens=400,
-            temperature=temperature,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return resp.content[0].text
+        kwargs = {
+            "model": model,
+            "max_tokens": 1024,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        if model in ANTHROPIC_NO_TEMPERATURE_MODELS:
+            # No temperature knob on this model -- adaptive thinking runs by
+            # default regardless; keep it shallow since this is a plain
+            # extractive-QA task, not something that benefits from deep
+            # reasoning, and thinking tokens are billed as output either way.
+            kwargs["output_config"] = {"effort": "low"}
+        else:
+            kwargs["temperature"] = temperature
+        resp = client.messages.create(**kwargs)
+        # content[0] is not reliably the answer once thinking is active --
+        # a ThinkingBlock can come first. Take only text blocks.
+        return "".join(block.text for block in resp.content if block.type == "text")
     if provider == "openai":
         import openai
 

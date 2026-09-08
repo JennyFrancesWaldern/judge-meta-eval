@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841245322,
+  "item_id": "15248",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# POA vs. Durable Power of Attorney on a Checking Account\n\n**Power of Attorney (POA) - General/Standard**\nA standard POA gives someone (the \"agent\" or \"attorney-in-fact\") authority to act on your behalf regarding your checking account\u2014writing checks, making withdrawals, managing transactions, etc. However, this authority **automatically ends if you become mentally incapacitated** (or, in some versions, at a specified time or event). It's meant to be used while you're fully capable of making decisions but perhaps unavailable (traveling, deployed, etc.).\n\n**Durable Power of Attorney (DPOA)**\nA durable POA includes the same authority to manage your checking account, but with one critical difference: it **remains valid even if you become incapacitated** due to illness, injury, or cognitive decline (like dementia). The \"durable\" designation specifically means the power *survives* your incapacity\u2014it's built to last through the exact situation where you'd need someone to step in and manage your finances because you no longer can.\n\n## Key Practical Difference\n\n| Feature | Standard POA | Durable POA |\n|---|---|---|\n| Valid while you're competent | Yes | Yes |\n| Valid if you become incapacitated | **No** \u2013 automatically terminates | **Yes** \u2013 continues |\n| Common use | Temporary convenience (travel, short-term help) | Long-term planning, elder care, disability protection |\n\n## Why This Matters for a Checking Account\n\nIf you only have a standard POA and you become incapacitated (say, from a stroke or advanced dementia), your agent **loses the ability to access your checking account right when you need help most**\u2014often forcing family members into court to get guardianship/conservatorship, which is costly and slow.\n\nWith a **durable** POA, the named agent can continue paying bills, managing deposits, and handling the account seamlessly, without interruption, regardless of your mental state.\n\n## Bottom Line\nMost financial and estate planning attorneys recommend using a **durable** power of attorney for bank accounts specifically *because* it protects against the scenario of incapacity\u2014which is often the very reason someone sets up a POA in the first place. Banks will typically ask whether the POA document includes durability language, since it affects whether they'll honor the agent's authority long-term."
+}

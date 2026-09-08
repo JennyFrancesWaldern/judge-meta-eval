@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841110736,
+  "item_id": "12276",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to Make a Will in South Africa\n\nHere's a general guide to creating a valid will in South Africa:\n\n## Legal Requirements\n\nTo be valid under South African law (Wills Act 7 of 1953), a will must:\n\n1. **Be in writing** - typed or handwritten\n2. **Be signed by the testator** (person making the will) at the end of the document\n3. **Be signed in the presence of two competent witnesses** who are at least 14 years old\n4. **Witnesses must sign in the presence of the testator and each other**\n5. Witnesses **should not be beneficiaries** in the will (or they may lose their inheritance)\n6. If someone signs on your behalf, this must be done in your presence and that of a Commissioner of Oaths\n\n## Key Steps\n\n1. **List your assets and liabilities** - property, investments, vehicles, debts, etc.\n2. **Decide on beneficiaries** - who inherits what\n3. **Appoint an executor** - person/institution to administer your estate\n4. **Consider appointing a guardian** for minor children, if applicable\n5. **Include specific bequests** - particular items to particular people\n6. **Sign with witnesses** as described above\n7. **Store safely** - with your lawyer, bank, or the Master of the High Court\n\n## Important Considerations\n\n- **Get professional help** - attorneys, banks, or financial institutions can draft wills, especially for complex estates\n- **Review regularly** - update after major life events (marriage, divorce, births, deaths)\n- **Executor's fees** - typically around 3.5% of the estate value\n- **Estate duty** - may apply to larger estates\n- **Community of property** - affects how assets are divided if married under this regime\n\n## Where to Get Help\n\n- Attorneys specializing in estate planning\n- Banks (many offer free will-drafting services)\n- The Master of the High Court's office for guidance\n- Legal Aid South Africa for those who qualify\n\n**Disclaimer:** This is general information only. For your specific situation, consult a qualified attorney or estate planner in South Africa, as laws can be complex and individual circumstances vary significantly."
+}

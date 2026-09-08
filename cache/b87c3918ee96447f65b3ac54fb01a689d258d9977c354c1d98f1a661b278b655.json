@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841270868,
+  "item_id": "15239",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Earliest Signs and Symptoms of Pregnancy\n\nHere are the most common early indicators of pregnancy:\n\n## Common Early Symptoms\n\n1. **Missed period** \u2013 Often the first and most noticeable sign\n2. **Fatigue** \u2013 Feeling unusually tired due to rising progesterone levels\n3. **Nausea/morning sickness** \u2013 Can occur any time of day, typically starting around 4-6 weeks\n4. **Breast changes** \u2013 Tenderness, swelling, or tingling; darkening of areolas\n5. **Frequent urination** \u2013 Due to hormonal changes and increased blood flow to kidneys\n6. **Food aversions or cravings** \u2013 Sudden dislike or desire for certain foods\n7. **Sensitivity to smells** \u2013 Heightened sense of smell, sometimes triggering nausea\n8. **Mild cramping or spotting** \u2013 Light \"implantation bleeding\" may occur when the embryo attaches to the uterine lining\n9. **Bloating** \u2013 Similar to premenstrual bloating\n10. **Mood swings** \u2013 Due to hormonal fluctuations\n11. **Headaches** \u2013 Linked to hormonal changes and increased blood volume\n12. **Basal body temperature staying elevated** \u2013 Noticeable if tracking temperature\n\n## Timing\nMost symptoms typically appear **1-2 weeks after conception**, though this varies significantly between individuals. Some people notice symptoms very early, while others may not experience noticeable signs for several weeks.\n\n## Confirmation\nSince these symptoms can overlap with premenstrual symptoms or other conditions, a **home pregnancy test** (checking for hCG hormone) or a **blood test/ultrasound from a healthcare provider** is the reliable way to confirm pregnancy.\n\nWould you like more detail on any specific symptom or information about when to see a doctor?"
+}

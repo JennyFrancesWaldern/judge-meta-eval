@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841335195,
+  "item_id": "15269",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Proper Lawn Fertilization Guide\n\n## Timing\n- **Cool-season grasses** (fescue, bluegrass, ryegrass): Fertilize in early fall and again in late fall; a light spring feeding is optional\n- **Warm-season grasses** (bermuda, zoysia, St. Augustine): Fertilize in late spring through summer when actively growing\n- Avoid fertilizing during dormancy or drought stress\n\n## Steps for Proper Application\n\n1. **Test your soil first** - A soil test tells you actual nutrient needs and pH level (ideal is 6.0-7.0)\n\n2. **Choose the right fertilizer**\n   - Look at the N-P-K ratio (nitrogen-phosphorus-potassium)\n   - Most lawns need higher nitrogen; phosphorus is often restricted/unnecessary unless soil test shows deficiency\n   - Consider slow-release nitrogen for steadier feeding\n\n3. **Calculate the right amount**\n   - Follow bag instructions based on square footage\n   - Generally aim for 1 lb of nitrogen per 1,000 sq ft per application\n\n4. **Apply evenly**\n   - Use a broadcast or drop spreader (not by hand)\n   - Apply in a criss-cross pattern (north-south, then east-west) for even coverage\n   - Fill spreader over pavement, not grass, to avoid spill damage\n\n5. **Water it in**\n   - Water lightly after applying (unless it's a \"weed and feed\" requiring dry leaves)\n   - This helps nutrients reach the roots and prevents burning\n\n6. **Mow appropriately**\n   - Don't fertilize right before or after mowing very short\n   - Wait a day or two after fertilizing to mow\n\n## Key Tips\n- **Don't overfertilize** - this can burn grass, cause excess growth, or run off into waterways\n- **Sweep excess** granules off sidewalks/driveways back onto lawn\n- **Avoid fertilizing before heavy rain** to prevent runoff\n- Consider **2-4 applications per year** rather than one heavy dose\n\nWould you like more specific advice for your grass type or region?"
+}

@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841305185,
+  "item_id": "15189",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Removing an Automatic Gearbox from a Ford Ranger\n\nHere's a general overview of the process. Note that specific steps can vary by model year, so consulting a factory service manual for your specific Ranger is highly recommended.\n\n## Preparation\n- Park on level ground, engage parking brake\n- Disconnect the negative battery terminal\n- Raise the vehicle securely on jack stands or a lift (never rely on a jack alone)\n- Drain the transmission fluid\n\n## Steps\n\n1. **Remove driveshaft** \u2013 Mark orientation, then unbolt and slide out the driveshaft (rear, and front if 4WD)\n\n2. **Disconnect electrical connectors** \u2013 Unplug wiring harness connectors from the transmission (speed sensors, solenoids, etc.)\n\n3. **Disconnect linkages/cables** \u2013 Remove shifter linkage/cable and any kickdown or TV cable if equipped\n\n4. **Remove cooler lines** \u2013 Disconnect transmission cooler lines, plug them to prevent leaks\n\n5. **Remove starter** \u2013 Unbolt and remove the starter motor if it's in the way\n\n6. **Support the engine** \u2013 Use an engine support bar or jack under the oil pan (with a block of wood) to hold the engine once the transmission is separated\n\n7. **Support the transmission** \u2013 Place a transmission jack under the gearbox and secure it\n\n8. **Remove transmission mount/crossmember** \u2013 Unbolt the rear crossmember/mount supporting the transmission\n\n9. **Remove torque converter access cover** \u2013 Remove the lower bellhousing cover to access the torque converter bolts\n\n10. **Remove torque converter bolts** \u2013 Unbolt the torque converter from the flexplate (rotate the engine to access each bolt)\n\n11. **Remove bellhousing bolts** \u2013 Unbolt the transmission from the engine block\n\n12. **Separate and lower** \u2013 Carefully pull the transmission straight back to clear the input shaft, keeping the torque converter in place, then lower it on the jack\n\n## Tips\n- Keep the torque converter from falling out by securing it or using a strap\n- Label/photograph all connections before removal\n- Have a drain pan ready for fluid spillage\n- A helper is very useful for controlling the transmission's weight and balance during removal\n\nWould you like details for a specific engine/transmission combination (e.g., 4R44E, 5R55E) or 2WD vs 4WD differences?"
+}

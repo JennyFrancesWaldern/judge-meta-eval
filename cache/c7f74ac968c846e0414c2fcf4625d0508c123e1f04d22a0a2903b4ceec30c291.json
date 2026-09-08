@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841228878,
+  "item_id": "15092",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to Factory Reset an HTC One VX\n\n**Important:** A factory reset will erase all data on your phone. Back up important photos, contacts, and files before proceeding.\n\n## Method 1: Through the Settings Menu (if phone is working)\n\n1. Go to **Settings**\n2. Tap **Backup and reset** (or **Storage** depending on your version)\n3. Select **Factory data reset**\n4. Tap **Reset phone**\n5. Confirm by tapping **Erase everything**\n6. The phone will reboot and reset itself\n\n## Method 2: Using Hardware Buttons (if phone is unresponsive or you can't access settings)\n\n1. Turn off the phone completely\n2. Press and hold the **Volume Down** button\n3. While holding Volume Down, press and hold the **Power** button\n4. Continue holding both buttons until you see a screen with options (usually white text on a black background)\n5. Use the **Volume buttons** to navigate to **FACTORY RESET**\n6. Press the **Power button** to select it\n7. Confirm the reset when prompted (usually by pressing Volume Up to confirm, or following on-screen instructions)\n8. Wait for the process to complete \u2014 the phone will reboot automatically\n\n## Additional Notes\n\n- Make sure your phone has sufficient battery charge (at least 50%) before starting\n- If your phone is linked to a Google account, you may need to enter those credentials after the reset (due to Factory Reset Protection)\n- This process will remove all apps, settings, and personal data, returning the phone to its original factory state\n\nIf you run into a specific issue during the process, let me know and I can help troubleshoot further!"
+}

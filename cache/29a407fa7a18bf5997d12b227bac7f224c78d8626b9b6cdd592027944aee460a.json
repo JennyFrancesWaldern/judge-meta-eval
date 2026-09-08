@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841278880,
+  "item_id": "14343",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to BBQ Corn on the Cob\n\n## Method 1: Husks On (Steamed then Grilled)\n\n1. **Prep:** Pull back husks (don't remove), strip off silk, then fold husks back over the corn\n2. **Soak:** Submerge in cold water for 15-20 minutes (prevents burning)\n3. **Grill:** Place on medium-high heat grill for 15-20 minutes, turning occasionally\n4. **Serve:** Remove husks (careful, hot!), then butter, salt, and season\n\n## Method 2: Husks Off (Direct Grilling)\n\n1. **Prep:** Remove all husks and silk completely\n2. **Oil:** Brush corn with olive oil or melted butter\n3. **Grill:** Cook directly on grates over medium-high heat for 10-15 minutes, turning every 2-3 minutes for even charring\n4. **Watch:** You want some golden/charred spots but not burnt\n\n## Method 3: Foil Wrapped\n\n1. **Prep:** Remove husks, season with butter/salt/pepper\n2. **Wrap:** Tightly in aluminum foil\n3. **Grill:** Cook for 15-20 minutes, turning occasionally\n4. **Benefit:** Steams the corn, keeps it moist, easy cleanup\n\n## Tips for Best Results\n\n- **Freshness matters** \u2014 fresher corn is sweeter and cooks better\n- **Don't overcook** \u2014 corn is done when kernels are tender and slightly charred\n- **Season after cooking** for husk-on method; season before for direct grilling\n- **Classic toppings:** butter, salt, pepper, lime juice, chili powder, cotija cheese (elote-style), fresh herbs\n\n## Quick Doneness Check\nKernels should be plump, tender when pierced, with some golden-brown or lightly charred spots for flavor.\n\nWhich method sounds most appealing to you? I can give more detail on any of them!"
+}

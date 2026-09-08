@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841118398,
+  "item_id": "12268",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How Hearing Loss Affects Sleep and Eating\n\nHearing loss doesn't directly damage the physical ability to sleep or eat, but it can have several indirect effects on both:\n\n## Effects on Sleep\n\n- **Tinnitus association**: Many people with hearing loss also experience tinnitus (ringing/buzzing in the ears), which can make it difficult to fall asleep or stay asleep in quiet environments\n- **Anxiety and stress**: Difficulty communicating and social isolation from hearing loss can increase anxiety levels, disrupting sleep patterns\n- **Safety concerns**: Not being able to hear alarms, someone calling for help, or environmental sounds can cause subconscious hypervigilance, leading to lighter, less restful sleep\n- **Hearing aid removal**: Taking out hearing aids at night removes a sense of connection to surroundings, which some people find unsettling\n- **Depression links**: Hearing loss is linked to higher rates of depression, which commonly disrupts sleep\n\n## Effects on Eating\n\n- **Social withdrawal**: People with hearing loss may avoid eating out or dining with others due to difficulty following conversations in noisy restaurants, potentially reducing social meals and appetite\n- **Isolation-related appetite changes**: Reduced social interaction can lead to eating alone more often, which sometimes results in less varied or nutritious meals\n- **Depression-related appetite changes**: Since hearing loss increases depression risk, this can secondarily affect appetite (either increased or decreased)\n- **Cognitive load**: The mental effort required to compensate for hearing loss during meals/conversations can be fatiguing, indirectly affecting eating experiences\n\n## Important Note\nThese connections are generally **indirect**\u2014mediated through psychological effects, social isolation, and related conditions\u2014rather than hearing loss directly causing physical sleep or eating dysfunction. If someone is experiencing significant sleep or appetite issues alongside hearing loss, consulting both an audiologist and a physician would be advisable to address underlying causes."
+}

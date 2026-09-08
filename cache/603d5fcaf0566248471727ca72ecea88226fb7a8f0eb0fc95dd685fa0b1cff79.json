@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841174018,
+  "item_id": "12435",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Madrid Weather in December\n\n**Temperature:**\n- Average high: 11\u00b0C (52\u00b0F)\n- Average low: 2\u00b0C (36\u00b0F)\n- Can feel colder due to wind\n\n**General Conditions:**\n- One of the coldest months in Madrid\n- Relatively dry compared to other European capitals\n- Around 5-8 days of rain expected\n- Occasional fog, especially in the mornings\n- Clear, sunny days are common despite the cold\n- Low humidity typical of Madrid's continental climate\n\n**Daylight:**\n- Short days, with sunset around 5:30 PM\n- About 9 hours of daylight\n\n**What to Expect:**\n- Crisp, cold air, especially at night\n- Occasional frost in early mornings\n- Snow is rare but not impossible\n- Christmas markets and holiday lights make it a festive time to visit\n\n**Packing Tips:**\n- Warm coat, scarf, gloves, and hat\n- Layers for temperature changes between day and night\n- Comfortable waterproof shoes (in case of rain)\n\nMadrid's December weather is generally mild by Northern European standards but still requires proper winter clothing due to the cold nights and occasional damp days."
+}

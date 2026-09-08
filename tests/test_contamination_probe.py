@@ -55,6 +55,19 @@ def test_missing_source_passages_fails_loudly(tmp_path, monkeypatch):
         probe.select_probe_items()
 
 
+def test_main_loads_dotenv_before_checking_keys(monkeypatch, fake_source_passages):
+    """Regression test: contamination_probe.py has its own entry point and
+    must call load_dotenv() itself -- it cannot rely on generate_responses.py's
+    main() to have done it, since that main() never runs when this script is
+    invoked directly. This bug shipped once already."""
+    monkeypatch.setattr(probe, "fetch_qa_items", lambda: fake_qa_pool(300))
+    calls = []
+    monkeypatch.setattr(probe, "load_dotenv", lambda *a, **k: calls.append("called"))
+    monkeypatch.setattr(sys, "argv", ["contamination_probe", "--dry-run"])
+    probe.main()
+    assert calls == ["called"]
+
+
 # --- Scoring ---
 
 def write_probe_output(tmp_path, monkeypatch, judgments):

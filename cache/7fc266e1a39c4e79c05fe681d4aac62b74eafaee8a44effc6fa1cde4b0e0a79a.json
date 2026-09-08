@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841327004,
+  "item_id": "15132",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "Here's how to connect your PC to a TV:\n\n## Easiest Method: HDMI Cable (Recommended)\n\n**Steps:**\n1. Check your PC has an HDMI output (most modern laptops/desktops do)\n2. Check your TV has an HDMI input port\n3. Connect an HDMI cable between the two\n4. Turn on the TV and select the correct HDMI input source (using your TV remote)\n5. Turn on the PC \u2014 it should detect the second display automatically\n\n**On Windows:**\n- Right-click the desktop \u2192 **Display settings**\n- Choose how you want to use the TV:\n  - **Duplicate** \u2013 same image on both screens\n  - **Extend** \u2013 TV acts as an additional screen\n  - **Second screen only** \u2013 uses just the TV\n\n**On Mac:**\n- Go to **System Settings > Displays** and configure similarly\n\n## Other Connection Options\n\n- **DisplayPort to HDMI cable/adapter** \u2013 if your PC has DisplayPort instead of HDMI\n- **USB-C to HDMI adapter** \u2013 common on newer laptops with USB-C/Thunderbolt ports\n- **Wireless casting** \u2013 Use Windows' \"Cast to Device\" feature or a device like Chromecast/Fire TV Stick if your TV supports wireless display sharing (no cables needed, but can have some lag)\n\n## Don't Forget Audio\n\n- Audio usually transmits through HDMI automatically\n- If not, go to **Settings > Sound** on your PC and select the TV as your audio output device\n\n## Quick Tips\n- Use a cable long enough for your setup (or wireless if distance is an issue)\n- If nothing shows on the TV, try pressing **Windows + P** to select a display mode, or check the TV's input source\n- For gaming, use HDMI 2.0/2.1 for higher refresh rates if your TV/PC support it\n\nLet me know your specific PC/TV models if you want more tailored steps!"
+}

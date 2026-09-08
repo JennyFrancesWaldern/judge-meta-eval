@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841346459,
+  "item_id": "15312",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Unearned Revenue\n\n**Unearned revenue** (also called deferred revenue) is money a company receives from a customer *before* delivering the goods or services that were paid for. Because the company hasn't yet earned the payment by fulfilling its obligation, it's recorded as a **liability** on the balance sheet\u2014not as revenue\u2014until the product or service is actually delivered. As the company fulfills its obligation over time, the liability is reduced and the amount is recognized as actual revenue on the income statement.\n\nThis concept follows the **revenue recognition principle**, which states that revenue should only be recognized when it is earned, not simply when cash is received.\n\n## Three Examples\n\n1. **Magazine or Streaming Subscriptions**\n   A customer pays $120 upfront for a 12-month magazine or streaming service subscription. The company records this as unearned revenue and recognizes $10 in revenue each month as issues are delivered or service is provided.\n\n2. **Annual Software Licenses (SaaS)**\n   A software company sells a one-year license for $1,200, paid in full at the start. Since the service will be provided over the coming year, the company records the full amount as unearned revenue and gradually recognizes $100 per month as earned revenue.\n\n3. **Prepaid Rent Received by a Landlord**\n   A tenant pays a landlord $12,000 for a full year of rent in advance. The landlord records this as unearned revenue since the use of the property hasn't yet been \"delivered\" over that period, and recognizes $1,000 per month as rental income is earned."
+}

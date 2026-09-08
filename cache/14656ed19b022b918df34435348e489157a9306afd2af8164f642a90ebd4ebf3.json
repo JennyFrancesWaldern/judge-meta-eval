@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841168290,
+  "item_id": "15369",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Getting an Antique Effect on Wood with Regular Paint\n\nHere's a simple method to achieve that aged, antique look:\n\n## Materials Needed\n- Base coat paint (color of your choice)\n- Contrasting top coat paint (usually darker, like brown or black)\n- Sandpaper (medium and fine grit)\n- Paintbrushes\n- Clear wax or varnish (optional, for sealing)\n- Rag or cloth\n- Candle/wax (optional, for the wax-resist technique)\n\n## Method 1: Dry Brush + Sanding Technique\n\n1. **Sand the wood** lightly to prepare the surface\n2. **Apply base coat** \u2013 paint your first color and let it dry completely\n3. **Apply top coat** \u2013 paint a second, contrasting color over it\n4. **Distress the edges** \u2013 once dry, sand down edges, corners, and raised areas where natural wear would occur (handles, corners, edges)\n5. **Reveal the base coat** \u2013 sand until the first color shows through in these worn spots\n6. **Seal it** \u2013 apply wax or varnish to protect and give an aged sheen\n\n## Method 2: Candle Wax Resist Technique\n\n1. Apply base coat and let dry\n2. Rub a candle/wax on areas where you want wear to show (edges, corners)\n3. Apply top coat over everything\n4. Once dry, sand or scrape those waxed areas \u2013 paint won't stick well there, revealing the base coat naturally\n\n## Method 3: Glaze/Antiquing Wash\n\n1. Paint your base color and let dry\n2. Mix a glaze (thinned dark paint or specialized antiquing glaze) \n3. Brush it over the surface, working into grooves and details\n4. Wipe off excess with a rag, leaving darker color settled in crevices and carved details\n5. This creates depth and an aged patina look\n\n## Tips\n- Focus wear on natural touch points (corners, edges, handles)\n- Less is often more \u2013 don't over-distress\n- Test on a scrap piece first\n- Combining techniques (glaze + light sanding) gives the most realistic effect\n\nWould you like more detail on any specific technique?"
+}

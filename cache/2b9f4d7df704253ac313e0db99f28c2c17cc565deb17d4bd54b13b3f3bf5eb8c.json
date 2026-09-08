@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841340212,
+  "item_id": "12367",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "Children learn a lot through water play, including:\n\n1. **Scientific concepts** \u2013 floating, sinking, density, cause and effect, volume, and states of matter\n2. **Math skills** \u2013 measuring, comparing quantities, counting, understanding concepts like full/empty and more/less\n3. **Fine motor skills** \u2013 pouring, squeezing sponges, using cups and droppers, scooping\n4. **Gross motor skills** \u2013 reaching, splashing, coordinating larger movements\n5. **Language development** \u2013 learning new vocabulary (pour, splash, float, sink, wet, dry) and communicating with peers\n6. **Social skills** \u2013 sharing materials, taking turns, cooperative play, negotiating roles\n7. **Sensory development** \u2013 experiencing different textures, temperatures, and sensations\n8. **Emotional regulation** \u2013 water play is often calming and can help children self-soothe\n9. **Problem-solving skills** \u2013 figuring out how to transfer water, fix leaks, or balance objects\n10. **Creativity and imaginative play** \u2013 using water in pretend scenarios like cooking, cleaning, or exploring\n\nOverall, water play is a versatile, hands-on learning experience that supports development across cognitive, physical, social, and emotional domains."
+}

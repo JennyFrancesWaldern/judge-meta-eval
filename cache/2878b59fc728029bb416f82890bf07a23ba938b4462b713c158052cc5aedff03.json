@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841295466,
+  "item_id": "14456",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Dealership vs Distributorship\n\n## Dealership\nA **dealership** is a business that sells products directly to end consumers/retail customers, typically for a specific brand.\n\n**Key characteristics:**\n- Deals with **retail customers** (end users)\n- Usually operates at the **retail level** of the supply chain\n- Often sells a **single brand** exclusively (e.g., a car dealership)\n- Smaller investment compared to distributorship\n- Limited to a specific **geographic area/showroom**\n- Focuses on sales, customer service, and after-sales support\n- Example: A Toyota car dealership selling cars to individual customers\n\n## Distributorship\nA **distributorship** acts as an intermediary between the manufacturer and retailers/dealers, buying in bulk and supplying to multiple sellers.\n\n**Key characteristics:**\n- Deals with **wholesalers, retailers, or dealers** (B2B)\n- Operates at the **wholesale level** of the supply chain\n- May handle **multiple brands/products**\n- Requires **larger investment** (bulk inventory, warehousing)\n- Covers a **larger territory/region**\n- Focuses on inventory management, logistics, and supply chain\n- Example: A distributor supplying smartphones to multiple retail stores across a state\n\n## Key Differences Table\n\n| Basis | Dealership | Distributorship |\n|-------|-----------|------------------|\n| **Position in supply chain** | Closer to end consumer | Between manufacturer and dealer |\n| **Customer type** | Individual consumers | Businesses/retailers |\n| **Investment** | Relatively lower | Higher (bulk stock) |\n| **Territory** | Smaller/local | Larger/regional |\n| **Brand exclusivity** | Often single brand | Can handle multiple brands |\n| **Role** | Sales & service | Supply & logistics |\n\n## Simple Analogy\nThink of it as a chain:\n**Manufacturer \u2192 Distributor \u2192 Dealer \u2192 Consumer**\n\nThe distributor buys in bulk from the manufacturer and supplies to dealers, who then sell directly to the public."
+}

@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841354535,
+  "item_id": "12383",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Sinigang na Baboy (Pork Sinigang)\n\nA classic Filipino sour soup made with pork and vegetables in a tamarind-based broth.\n\n## Ingredients\n- 1 kg pork belly or pork ribs, cut into chunks\n- 1 pack sinigang mix (tamarind-based) or fresh tamarind\n- 1 onion, quartered\n- 2-3 tomatoes, quartered\n- 1 radish (labanos), sliced\n- 1 eggplant, sliced\n- String beans (sitaw), cut into 2-inch pieces\n- Kangkong (water spinach) or spinach\n- 2-3 pieces green chili (siling pansigang)\n- Fish sauce (patis) to taste\n- Salt and pepper to taste\n- 6-8 cups water\n- 2 tbsp cooking oil (optional, for saut\u00e9ing)\n\n## Instructions\n\n1. **Boil the pork**: In a large pot, add water, pork, onion, and tomatoes. Bring to a boil, then simmer for 45 minutes to 1 hour until pork is tender. Skim off scum that rises to the surface.\n\n2. **Add tamarind flavor**: Once pork is tender, add the sinigang mix (or tamarind base) and stir until dissolved. Taste and adjust.\n\n3. **Add hard vegetables first**: Add radish and let simmer for 5 minutes.\n\n4. **Add remaining vegetables**: Add eggplant, string beans, and green chili. Simmer for another 5-7 minutes.\n\n5. **Season**: Add fish sauce, salt, and pepper to taste.\n\n6. **Add leafy greens last**: Add kangkong or spinach and cook just until wilted (1-2 minutes) \u2014 don't overcook.\n\n7. **Serve hot** with steamed rice.\n\n## Tips\n- Adjust sourness by adding more or less tamarind mix\n- Some like it spicier \u2014 add more chili\n- Pork belly gives richer flavor; ribs are leaner\n- You can also use fresh tamarind (boiled and strained) instead of instant mix for a more natural taste\n\nEnjoy your sinigang! \ud83c\udf72"
+}

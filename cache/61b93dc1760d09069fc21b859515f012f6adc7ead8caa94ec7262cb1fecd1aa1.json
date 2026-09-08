@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841263106,
+  "item_id": "15163",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "In the context of Indian television (referring to the show \"Prithvi Vallabh\" or more likely \"Ek Rishta Aisa Bhi\" or similar serials featuring a character named Pragya), the peacock is often used symbolically in Indian culture and storytelling more broadly to represent beauty, grace, pride, and immortality, as well as being associated with Lord Krishna and divine protection.\n\nIf you're referring to the character Pragya from the popular Indian TV show **\"Kumkum Bhagya,\"** the peacock symbolism there is tied to themes of love, beauty, and the vibrant, colorful nature of relationships\u2014often used in the show's visual and narrative motifs to represent grace and the emotional depth of Pragya's character, especially in romantic or transformative moments.\n\nIf you meant something more specific (a particular scene, dream sequence, or context), let me know and I can help clarify further!"
+}

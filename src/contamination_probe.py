@@ -31,6 +31,8 @@ import json
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from src import cache
 from src.generate_responses import (
     CONDITIONS,
@@ -82,6 +84,8 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--score", action="store_true", help="Compute the memorization rate from a filled-in review file.")
     args = parser.parse_args()
+
+    load_dotenv()
 
     if args.score:
         if not PROBE_OUTPUT_PATH.exists():

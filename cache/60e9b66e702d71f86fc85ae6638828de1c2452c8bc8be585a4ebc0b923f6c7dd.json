@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841311645,
+  "item_id": "14402",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "A travel agent helps people plan and book trips, acting as a middleman between travelers and various travel service providers. Here's what they typically do:\n\n**Core Services:**\n- Book flights, hotels, rental cars, and cruises\n- Arrange vacation packages (all-inclusive resorts, tours, etc.)\n- Plan itineraries for complex trips involving multiple destinations\n- Secure travel insurance\n\n**Value-Added Services:**\n- Offer expert advice based on destination knowledge and personal experience\n- Find deals, discounts, or promotions travelers might not find on their own\n- Handle group travel logistics (weddings, corporate trips, family reunions)\n- Arrange specialized trips (honeymoons, adventure travel, luxury vacations, cruises)\n\n**Problem-Solving:**\n- Assist with rebooking if flights are canceled or plans change\n- Help navigate visa requirements, passport issues, or travel restrictions\n- Act as an advocate if something goes wrong during the trip (lost bookings, resort issues, etc.)\n\n**Behind the Scenes:**\n- Maintain relationships with airlines, hotels, and tour operators, which can lead to perks for clients (room upgrades, added amenities)\n- Stay updated on travel regulations, safety advisories, and destination-specific information\n\nMany people now book travel online themselves, but travel agents remain popular for complex trips, luxury travel, or when people want personalized service and someone to handle issues if things go wrong. Some specialize in specific types of travel, like cruises, honeymoons, or corporate travel."
+}

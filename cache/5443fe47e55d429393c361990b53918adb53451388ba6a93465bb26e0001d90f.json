@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841371435,
+  "item_id": "12190",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Shares Ex-Dividend Meaning\n\n**Ex-dividend** (short for \"excluding dividend\") refers to a stock trading without the value of its next dividend payment. If you buy a share on or after the ex-dividend date, you will **not** receive the upcoming dividend\u2014it goes to the seller instead.\n\n## Key Points\n\n- **Ex-Dividend Date**: The cutoff date that determines dividend eligibility. You must own the stock **before** this date to receive the dividend.\n- **Record Date**: Usually falls one business day after the ex-dividend date. This is when the company checks its records to see who the official shareholders are.\n- **Price Adjustment**: On the ex-dividend date, a stock's price typically drops by roughly the amount of the dividend, since new buyers won't receive that payout.\n\n## Example\n\nIf a company declares a $1 dividend with an ex-dividend date of **June 15**:\n- If you buy the stock on **June 14** (or earlier) \u2192 you **receive** the dividend\n- If you buy the stock on **June 15** (or later) \u2192 you **do NOT receive** the dividend\n\n## Why It Matters\n\n- **For Buyers**: If you want to receive a dividend payment, you must purchase the stock *before* the ex-dividend date.\n- **For Sellers**: If you sell your shares on or after the ex-dividend date, you still receive the dividend since you owned the shares before the cutoff.\n\n## Quick Summary Table\n\n| Action | Before Ex-Dividend Date | On/After Ex-Dividend Date |\n|--------|-------------------------|----------------------------|\n| Buy shares | Get the dividend | Miss the dividend |\n| Sell shares | Still get the dividend | Still get the dividend |\n\nThis concept is important for dividend investors who want to time their trades to capture dividend payments, though it's worth noting the stock price adjustment typically offsets the dividend gain in the short term."
+}

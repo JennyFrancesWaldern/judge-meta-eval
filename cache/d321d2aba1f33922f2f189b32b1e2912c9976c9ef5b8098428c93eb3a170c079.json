@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841196444,
+  "item_id": "15342",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Lemon Water Guidelines\n\nThere's no strict medical requirement, but here are general recommendations:\n\n## Typical Amount\n- **1-2 cups per day** is common (about 8-16 oz)\n- Some people drink it throughout the day (up to 3-4 cups)\n- A common ratio: **juice of half a lemon per 8 oz (1 cup) of water**\n\n## Best Practices\n- **Morning**: Many people drink it first thing on an empty stomach\n- **Spread out**: Drinking throughout the day is fine too\n- **Use a straw**: Helps protect tooth enamel from citric acid\n\n## Things to Watch For\n- **Tooth enamel**: Lemon's acidity can erode enamel over time\u2014rinse mouth with plain water afterward or avoid brushing teeth immediately after\n- **Acid reflux/heartburn**: If you have GERD, lemon water might worsen symptoms\n- **Stomach sensitivity**: Some people experience increased stomach acid or discomfort\n\n## Bottom Line\n2 cups (16 oz) daily is a reasonable, safe amount for most healthy adults. There's no strong scientific evidence that lemon water provides dramatic health benefits beyond regular hydration plus a small amount of vitamin C, but it's generally safe in moderate amounts and can make water more appealing to drink.\n\nIf you have specific health conditions (kidney issues, acid reflux, tooth sensitivity), it's worth checking with a doctor or dentist about what's appropriate for you."
+}

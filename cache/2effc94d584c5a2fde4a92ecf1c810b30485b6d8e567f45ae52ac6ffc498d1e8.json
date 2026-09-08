@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841358338,
+  "item_id": "14297",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Removing a Row in Microsoft Word\n\nTo remove a row from a table in Word:\n\n**Method 1: Right-click**\n1. Click anywhere in the row you want to delete\n2. Right-click to open the context menu\n3. Select **Delete Rows** (or \"Delete Cells\" then choose \"Delete entire row\")\n\n**Method 2: Using the Ribbon**\n1. Click anywhere in the row you want to delete\n2. Go to the **Layout** tab (under Table Tools, which appears when your cursor is in a table)\n3. Click **Delete** in the Rows & Columns group\n4. Select **Delete Rows**\n\n**Tip:** If you want to delete multiple rows at once, click and drag to select all the rows first, then use either method above.\n\n**Note:** Pressing the **Delete** key on your keyboard will only clear the text in the row, not remove the row itself. You must use one of the methods above to actually delete the row structure."
+}

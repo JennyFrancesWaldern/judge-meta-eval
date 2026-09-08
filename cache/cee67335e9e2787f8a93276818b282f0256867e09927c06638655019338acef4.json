@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841139154,
+  "item_id": "15547",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "The College World Series (CWS) champion in NCAA Division I baseball is determined through a multi-stage postseason tournament:\n\n1. **Regular Season** \u2013 Teams compete throughout the spring to build a resume for at-large selection or win their conference tournament for an automatic bid.\n\n2. **Selection** \u2013 64 teams are chosen for the NCAA Division I Baseball Tournament, including conference champions (automatic bids) and other strong teams (at-large bids). The field is seeded, with the top 16 teams designated as national seeds.\n\n3. **Regionals** \u2013 The 64 teams are placed into 16 regional brackets of four teams each, hosted by the top-seeded teams. Each regional is a double-elimination format, and the winner of each regional advances.\n\n4. **Super Regionals** \u2013 The 16 regional winners are paired into 8 best-of-three series called Super Regionals. The winner of each series advances to the College World Series.\n\n5. **College World Series (Omaha)** \u2013 The final 8 teams travel to Omaha, Nebraska, to play at Charles Schwab Field Omaha. These teams are split into two four-team double-elimination brackets.\n\n6. **Championship Series** \u2013 The winners of each bracket meet in a best-of-three championship series to determine the national champion.\n\nThis format ensures teams must survive multiple elimination rounds, rewarding both consistency and clutch performance under pressure."
+}

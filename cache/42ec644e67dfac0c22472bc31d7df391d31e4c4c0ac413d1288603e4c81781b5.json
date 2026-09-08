@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841181084,
+  "item_id": "15370",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "Greenhouse gases play a crucial role in making life on Earth possible. Here's why:\n\n**They keep Earth warm enough to support life**\n\nWithout greenhouse gases, Earth's average temperature would be around -18\u00b0C (0\u00b0F) instead of the current comfortable average of about 15\u00b0C (59\u00b0F). That's a difference of over 30 degrees Celsius.\n\n**How they work**\n\nGases like carbon dioxide, methane, water vapor, and nitrous oxide exist naturally in the atmosphere. They allow sunlight to pass through and reach Earth's surface, but they trap some of the heat that radiates back up from the surface, preventing it from escaping into space. This is called the **greenhouse effect**\u2014similar to how a greenhouse traps heat to keep plants warm.\n\n**Why this matters for life**\n\n- Liquid water, essential for all known life, could not exist on Earth's surface without this warming effect\u2014it would all freeze\n- Stable temperature ranges allow ecosystems, agriculture, and biodiversity to flourish\n- The natural greenhouse effect has helped maintain relatively stable climate conditions over long periods, allowing life to evolve and adapt\n\n**The important distinction**\n\nThe natural greenhouse effect is beneficial and necessary. The concern today is about the *enhanced* greenhouse effect caused by human activities (burning fossil fuels, deforestation, etc.) that has significantly increased concentrations of gases like CO2 beyond natural levels. This extra warming is driving climate change, disrupting weather patterns, raising sea levels, and threatening ecosystems.\n\nSo in short: greenhouse gases are essential in the right amounts\u2014they make Earth habitable\u2014but excessive amounts, largely from human activity, are now causing problems by amplifying that natural warming effect beyond sustainable levels."
+}

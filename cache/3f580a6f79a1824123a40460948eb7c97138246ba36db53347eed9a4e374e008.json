@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841216106,
+  "item_id": "15143",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Elements, Compounds, and Mixtures\n\n## Elements\n- **Definition**: Pure substances made of only one type of atom\n- Cannot be broken down into simpler substances by chemical means\n- Examples: Oxygen (O), Gold (Au), Hydrogen (H), Carbon (C)\n- Represented by symbols on the periodic table\n\n## Compounds\n- **Definition**: Substances formed when two or more elements chemically combine in a fixed ratio\n- Have a new, distinct set of properties different from the elements that formed them\n- Can only be separated into elements through chemical reactions\n- Examples: Water (H\u2082O), Salt (NaCl), Carbon Dioxide (CO\u2082)\n\n## Mixtures\n- **Definition**: Combination of two or more substances (elements/compounds) that are physically combined, not chemically bonded\n- Components retain their individual properties\n- Can be separated by physical methods (filtration, evaporation, distillation, etc.)\n- Composition can vary (no fixed ratio)\n- Two types:\n  - **Homogeneous**: Uniform composition throughout (e.g., saltwater, air)\n  - **Heterogeneous**: Non-uniform composition (e.g., sand and water, salad)\n\n## Key Comparison Table\n\n| Feature | Element | Compound | Mixture |\n|---------|---------|----------|---------|\n| Composition | One type of atom | Two+ elements chemically bonded | Two+ substances physically combined |\n| Ratio | N/A | Fixed | Variable |\n| Separation | Cannot be separated (chemically) | Chemical methods only | Physical methods |\n| New properties | N/A | Yes, different from components | No, retains original properties |\n| Example | Iron (Fe) | Water (H\u2082O) | Sand and water |\n\n## Simple Summary\n- **Element** = building block (simplest form)\n- **Compound** = chemically joined elements (new substance)\n- **Mixture** = physically combined substances (no new substance formed)"
+}

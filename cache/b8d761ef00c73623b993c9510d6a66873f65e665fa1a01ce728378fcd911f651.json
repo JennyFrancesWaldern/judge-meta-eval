@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841379519,
+  "item_id": "12381",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to Fertilize Your Orchid\n\n## Choose the Right Fertilizer\n- Use a balanced, orchid-specific fertilizer (e.g., 20-20-20) or one labeled for orchids\n- Water-soluble formulas are easiest to use and control\n\n## Basic Method\n1. **Dilute properly** - Use about \u00bc to \u00bd the strength recommended on the label (orchids are sensitive to over-fertilizing)\n2. **Water first** - Never fertilize dry roots; water the plant first, then apply diluted fertilizer\n3. **Apply to moist medium** - Pour the fertilizer solution through the potting mix until it drains out the bottom\n\n## Frequency\n- **Growing season (spring/summer):** Fertilize every 1-2 weeks\n- **Dormant season (fall/winter):** Reduce to once a month or stop entirely, depending on the orchid type\n\n## The \"Weakly, Weekly\" Rule\nA popular approach: use a very diluted solution (\u00bc strength) every time you water, rather than a strong dose occasionally. This mimics how orchids absorb nutrients in nature.\n\n## Flush the Pot\n- Every 4-6 weeks, water thoroughly with plain water to flush out any fertilizer salt buildup in the potting medium\n- This prevents root burn and salt accumulation\n\n## Additional Tips\n- **Never fertilize a stressed or newly repotted orchid** - wait until it's established\n- **Avoid fertilizing dry roots** - always water first\n- **Match fertilizer to growing medium:**\n  - Bark-based mixes: use a fertilizer higher in nitrogen (bark absorbs nitrogen as it breaks down)\n  - Moss-based mixes: a balanced fertilizer works well\n- **Less is more** - orchids are more forgiving of under-fertilizing than over-fertilizing\n\n## Signs of Over-Fertilizing\n- Brown leaf tips\n- Salt crust on the medium surface\n- Root damage\n\nFollowing these guidelines should keep your orchid healthy and encourage good blooming cycles!"
+}

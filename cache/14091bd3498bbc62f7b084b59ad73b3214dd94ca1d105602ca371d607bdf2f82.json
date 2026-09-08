@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841319118,
+  "item_id": "14476",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Helping Someone in Suicidal Crisis\n\n## Immediate Steps\n\n**If danger is imminent:**\n- Don't leave them alone\n- Remove access to lethal means (weapons, medications, etc.)\n- Call emergency services (911, or local equivalent) or take them to an ER\n- Contact a crisis line: **988** (Suicide & Crisis Lifeline in the US) or text HOME to 741741\n\n## How to Talk to Them\n\n- **Ask directly**: \"Are you thinking about suicide?\" This does NOT plant the idea\u2014it opens the door for honest conversation\n- **Listen without judgment** \u2014 don't argue, minimize their pain, or say things like \"you have so much to live for\"\n- **Validate their feelings**: \"That sounds incredibly painful\" rather than trying to fix it immediately\n- **Stay calm** \u2014 your reaction affects how safe they feel opening up\n\n## What Helps\n\n- Ask what support looks like for them specifically\n- Help them connect with a mental health professional\n- Create a safety plan together (warning signs, coping strategies, people to contact)\n- Follow up afterward \u2014 check in regularly, don't assume the crisis has passed\n- Encourage professional help, but don't force ultimatums\n\n## What to Avoid\n\n- Promising secrecy (\"don't tell anyone\")\n- Being dismissive or shocked\n- Debating whether their pain is \"valid\"\n- Leaving them alone during acute crisis\n\n## For Yourself\n\nSupporting someone in crisis is heavy. Consider talking to a counselor yourself, and know your limits \u2014 you're not solely responsible for keeping someone alive; connecting them to professional help is key.\n\n---\n\nIf you or someone you know is struggling right now: **988** (US), or search \"[your country] crisis line\" for local resources. Would you like help finding resources for a specific location?"
+}

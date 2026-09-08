@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841252240,
+  "item_id": "14466",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Air Fryer Breaded Fish\n\n## Ingredients\n- Fish fillets (cod, tilapia, or haddock work well)\n- 1 cup breadcrumbs (panko works best for crispiness)\n- 1/2 cup flour\n- 2 eggs, beaten\n- Salt, pepper, paprika, garlic powder (to taste)\n- Cooking spray or olive oil spray\n\n## Instructions\n\n1. **Preheat** your air fryer to 400\u00b0F (200\u00b0C) for about 3-5 minutes.\n\n2. **Set up a breading station** with three shallow dishes:\n   - Dish 1: Flour mixed with salt and pepper\n   - Dish 2: Beaten eggs\n   - Dish 3: Breadcrumbs mixed with paprika, garlic powder, and a pinch of salt\n\n3. **Pat the fish dry** with paper towels (this helps the breading stick).\n\n4. **Bread the fish** by coating each fillet:\n   - First in the flour (shake off excess)\n   - Then in the egg wash\n   - Finally in the breadcrumbs, pressing gently to adhere\n\n5. **Spray the air fryer basket** lightly with cooking spray to prevent sticking.\n\n6. **Arrange the fillets** in a single layer in the basket, leaving space between pieces for air circulation. Don't overcrowd\u2014cook in batches if needed.\n\n7. **Spray the top of the fish** with cooking spray (this helps achieve a golden, crispy crust).\n\n8. **Air fry** for 8-12 minutes, flipping halfway through, until the fish is golden brown and flakes easily with a fork. Internal temperature should reach 145\u00b0F (63\u00b0C).\n\n9. **Serve** immediately with lemon wedges, tartar sauce, or your favorite dipping sauce.\n\n## Tips\n- Panko breadcrumbs give a crispier texture than regular breadcrumbs.\n- Thinner fillets cook faster\u2014adjust time accordingly.\n- Avoid overcrowding the basket for even crispiness.\n\nEnjoy your crispy, healthier alternative to deep-fried fish!"
+}

@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841364380,
+  "item_id": "12458",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Functions of Toothpaste\n\nToothpaste serves several important functions in oral hygiene:\n\n1. **Cleaning action** \u2013 Removes food debris, plaque, and stains from teeth surfaces through mild abrasives.\n\n2. **Fluoride delivery** \u2013 Strengthens tooth enamel and helps prevent dental caries (cavities) by promoting remineralization.\n\n3. **Plaque control** \u2013 Helps reduce plaque buildup, which can lead to gum disease if untreated.\n\n4. **Freshens breath** \u2013 Contains flavoring agents (mint, menthol, etc.) that neutralize odor-causing bacteria and leave a pleasant taste.\n\n5. **Polishing** \u2013 Gives teeth a smooth, polished surface, making it harder for plaque to stick.\n\n6. **Whitening** \u2013 Some formulations contain special agents to remove surface stains and brighten teeth.\n\n7. **Desensitizing** \u2013 Certain toothpastes contain compounds (like potassium nitrate) that reduce tooth sensitivity to hot, cold, or sweet stimuli.\n\n8. **Antibacterial action** \u2013 Some contain antimicrobial agents (like triclosan or zinc citrate) to reduce harmful bacteria in the mouth.\n\n9. **Gum health support** \u2013 Helps maintain healthy gums by reducing bacterial buildup near the gumline.\n\n10. **pH balance** \u2013 Helps neutralize acids produced by bacteria, protecting enamel from erosion.\n\nWould you like me to explain the role of specific ingredients (like fluoride, abrasives, or surfactants) in more detail?"
+}

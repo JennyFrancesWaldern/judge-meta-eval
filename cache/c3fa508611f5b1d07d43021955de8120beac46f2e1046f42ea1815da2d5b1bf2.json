@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841236162,
+  "item_id": "15528",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Restylane Filler Side Effects\n\n## Common Side Effects (Usually Temporary)\n- Swelling\n- Redness\n- Bruising\n- Pain/tenderness at injection site\n- Itching\n- Firmness or lumps under the skin\n- Headache (with certain products)\n\nThese typically resolve within **a few days to a week**.\n\n## Less Common Side Effects\n- Asymmetry\n- Discoloration\n- Infection at injection site\n- Bumps or nodules that persist longer\n- Hypersensitivity reactions\n\n## Rare but Serious Side Effects\n- **Vascular occlusion** \u2013 filler accidentally injected into a blood vessel, potentially causing tissue damage or skin necrosis\n- **Vision changes or blindness** \u2013 extremely rare, associated with filler entering blood vessels near the eyes (especially with nose/forehead injections)\n- **Granulomas** \u2013 delayed inflammatory nodules\n- **Migration** of the filler from the injection site\n- **Tyndall effect** \u2013 bluish discoloration if injected too superficially\n- **Allergic reactions** (rare since Restylane is hyaluronic acid-based, which is generally well-tolerated)\n\n## Factors That Increase Risk\n- Injection by inexperienced or unlicensed practitioners\n- Certain injection sites (nose, glabella/forehead are higher risk areas)\n- Underlying bleeding disorders or blood thinner use\n- Active skin infections at the treatment site\n\n## Important Notes\n- Effects are dose- and site-dependent\n- Most side effects are mild and self-resolving\n- Hyaluronidase can be used to dissolve Restylane if serious complications occur, which is an advantage over some other filler types\n- Choosing a qualified, experienced injector significantly reduces risk of serious complications\n\n**This information is for educational purposes only.** Anyone considering Restylane treatment should consult with a licensed, experienced medical professional to discuss personal risk factors, medical history, and appropriate product selection for their specific needs."
+}

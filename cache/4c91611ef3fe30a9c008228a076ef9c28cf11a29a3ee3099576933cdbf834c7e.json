@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841148268,
+  "item_id": "15453",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Filing a Lien on a Semi-Truck\n\nThe process varies by state, but here's the general procedure:\n\n## Common Types of Liens\n- **Mechanic's/Repair Lien** - for unpaid repair or service work\n- **Storage Lien** - for unpaid storage fees\n- **Judgment Lien** - based on a court judgment\n- **Purchase Money/Financing Lien** - for unpaid loan balances\n\n## General Steps\n\n1. **Determine the correct lien type** based on your situation (repairs, storage, unpaid debt, etc.)\n\n2. **Contact your state's DMV or Department of Motor Vehicles** - Since semis are titled vehicles, liens typically go through the same state agency that handles vehicle titles\n\n3. **Get the required forms** - Usually something like:\n   - Application for lien or title with lien noted\n   - Notice of lien form\n   - Affidavit of debt/services rendered\n\n4. **Provide documentation** such as:\n   - Copy of the service/repair invoice or contract\n   - Proof of notice sent to the owner\n   - VIN and vehicle information\n   - Your business license (if applicable, e.g., mechanic's lien)\n\n5. **Notify the owner and any existing lienholders** - Most states require formal written notice before or after filing\n\n6. **Pay filing fees** - Varies by state, typically $10\u2013$75\n\n7. **File with the county recorder or state title office** - Some states require county-level filing, others handle it at the state DMV level\n\n## Important Considerations\n- **Time limits** - Many states have strict deadlines (30-90 days) from when the debt arose\n- **Interstate commerce** - If the truck operates across state lines, you may need to check where it's titled\n- **Existing liens** - Check if there's already a lienholder (like a bank) since that affects priority\n\n## Recommendation\nSince laws vary significantly by state and mistakes can invalidate your lien, I'd suggest:\n- Checking your specific state DMV's website for exact forms/requirements\n- Consulting with an attorney, especially for higher-value liens\n- If you're a mechanic/repair shop, your state's mechanic lien statute will have specific requirements\n\n**What state are you in?** I can give more specific guidance if you let me know."
+}

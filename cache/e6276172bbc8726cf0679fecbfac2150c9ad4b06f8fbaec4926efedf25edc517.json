@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841209124,
+  "item_id": "12361",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Setting Up an Outlook Rule to Delay Sending Email\n\nHere's how to create a rule that delays all outgoing emails:\n\n## Method 1: Using Rules (Delays All Emails)\n\n1. Open **Outlook**\n2. Go to **File** \u2192 **Manage Rules & Alerts**\n3. Click **New Rule**\n4. Under \"Start from a blank rule,\" select **Apply rule on messages I send**\n5. Click **Next**\n6. On the conditions screen, you can leave everything unchecked to apply to all messages (click **Yes** when prompted to confirm applying to all messages sent)\n7. Click **Next**\n8. Check the box for **\"defer delivery by a number of minutes\"**\n9. Click the underlined **\"a number of\"** link\n10. Enter the delay time (e.g., 1\u2013120 minutes)\n11. Click **OK**, then **Next**\n12. Add any exceptions if needed (optional)\n13. Name your rule (e.g., \"Delay Send\")\n14. Click **Finish**\n\n## Method 2: Delay a Single Email (Manual Option)\n\nIf you don't want a rule for every email:\n\n1. Compose your email\n2. Click **Options** tab\n3. Select **Delay Delivery**\n4. Set the desired **date/time** for sending\n5. Click **Close**, then **Send**\n\nThe email will sit in your **Outbox** until the scheduled time.\n\n## Important Notes\n\n- The delay rule only works while **Outlook is open** \u2014 if you close Outlook before the delay period ends, the email won't send until you reopen it.\n- Emails sit in the **Outbox** during the delay period, so don't disable your rule if you need to send something urgently \u2014 you can right-click the email in the Outbox and choose to send it immediately.\n- This works differently in **Outlook.com/Outlook on the web**, where the interface may vary slightly.\n\nWould you like instructions specific to Outlook Web App or a particular version (like Outlook 365)?"
+}

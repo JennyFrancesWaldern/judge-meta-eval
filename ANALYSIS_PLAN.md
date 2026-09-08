@@ -132,14 +132,16 @@ explicit -- the same axes Sclar et al. vary). This directly measures
 whether format moves the responses, which is the thing actually named in
 METHODOLOGY.md.
 
-**Priced both ways:**
-- 1 alternate format: 200 calls, **$0.29** (real dry run against the
+**Priced both ways** (revised 2026-09-10 with the corrected 410-token
+output assumption -- see section 2 above):
+- 1 alternate format: 200 calls, **$0.68** (real dry run against the
   actual 50-item subset).
-- 2 alternate formats: 400 calls, **$0.58**.
+- 2 alternate formats: 400 calls, **$1.35**.
 - (For reference, the original seed/temperature version priced at $0.28 for
-  a similar-sized subset -- comparable cost, wrong target.)
+  a similar-sized subset, before the output-token correction -- comparable
+  cost at the time, wrong target regardless.)
 
-Going with **2 alternate formats ($0.58)**: one comparison point can't
+Going with **2 alternate formats ($1.35)**: one comparison point can't
 distinguish "this particular reformulation happens to be similar" from
 "format doesn't matter here" -- two independent reformulations give at
 least a minimal spread to look at. If format variance turns out large
@@ -361,24 +363,39 @@ condition (a) individually. Adding a 6th pair type would mean either more
 labeling time (not authorized) or thinning every group to 33-34 items
 (widening every subgroup CI further); left out for now on that basis.
 
-**Cost estimate** (official per-million-token rates, checked directly
-against claude.com/pricing and the OpenAI API pricing docs on 2026-09-07):
-assuming ~300 input tokens (passage + question + instructions) and ~150
-output tokens per call, 200 calls each for (a), (b), (c), (d):
+**Cost estimate, revised 2026-09-10 with real measured output length.**
+The original estimate (below, struck through in spirit not in markdown)
+assumed ~150 output tokens per call, official per-million-token rates
+checked against claude.com/pricing and the OpenAI API pricing docs on
+2026-09-07. The 40 real contamination-probe calls (condition d, Sonnet 5)
+came back averaging **409 estimated tokens, range 210-594** -- Sonnet 5
+writes full markdown-formatted answers by default, even on an open-ended
+prompt with no length instruction. 150 was the wrong order of magnitude,
+not just imprecise. `ESTIMATED_OUTPUT_TOKENS` is now 410 everywhere in
+src/generate_responses.py. Grounded conditions (a, b, c) haven't produced
+real data yet -- their "use only the passage above" instruction may or may
+not be more constraining than condition (d)'s open prompt -- so 410 is
+applied to them too, pending real evidence, rather than assuming they're
+shorter with no basis.
 
-| Condition | Model | Input cost | Output cost | Subtotal |
+| Condition | Model | Input cost | Output cost (@410 tok) | Subtotal |
 |---|---|---|---|---|
-| (a) strong | Sonnet 5 ($2/$10 per M) | $0.12 | $0.30 | $0.42 |
-| (b) moderate, cross-family | GPT-5.4 mini ($0.75/$4.50 per M) | $0.045 | $0.135 | $0.18 |
-| (c) weak | Haiku 4.5 ($1/$5 per M) | $0.06 | $0.15 | $0.21 |
-| (d) ungrounded | Sonnet 5, no passage | $0.05 | $0.30 | $0.35 |
+| (a) strong | Sonnet 5 ($2/$10 per M) | $0.12 | $0.82 | $0.94 |
+| (b) moderate, cross-family | GPT-5.4 mini ($0.75/$4.50 per M) | $0.045 | $0.369 | $0.41 |
+| (c) weak | Haiku 4.5 ($1/$5 per M) | $0.06 | $0.41 | $0.47 |
+| (d) ungrounded | Sonnet 5, no passage | $0.05 | $0.82 | $0.87 |
 
-**Total: ~$1.20** for the full 800-generation response pool. Confirmed by an
-actual dry run against the real 200-item RAGTruth sample (not the flat
-token assumption above): **$1.17**, using real prompt text. Even with a
-5-10x buffer for prompt iteration and retries, this stays under ~$12.
-Judge-scoring costs (Phase 3) are separate -- see the total-cost section
-near the end of this file.
+**Total: ~$2.70** for the full 800-generation response pool -- confirmed by
+an actual dry run against the real 200-item data with the corrected
+constant. Up from the original $1.17 estimate; still small in absolute
+terms, but a 2.3x miss on a number already presented as "checked," not
+guessed, which is itself worth sitting with -- the input-token side was
+real (measured from actual passages), the output-token side was not
+(a flat assumption dressed up next to a measured number), and that
+asymmetry wasn't flagged clearly enough the first time. Even with a 3-5x
+buffer for prompt iteration and retries, this stays under ~$12-13. Judge-
+scoring costs (Phase 3) are separate and carry the same open question --
+see the total-cost section near the end of this file.
 
 ### 2b. Self-preference confound: investigation and what it costs to reduce
 
@@ -416,7 +433,8 @@ another.
    self-preference number needs to be interpreted against. This costs
    nothing beyond the already-approved labeling.
 
-2. **~$0.35, bracketing from the other side.** Added condition (e) =
+2. **~$0.77 (revised 2026-09-10 with the 410-token correction), bracketing
+   from the other side.** Added condition (e) =
    `gpt-5.6-sol` (confirmed model ID, OpenAI's actual flagship, per the docs
    check above), generated for the items whose scheduled pair is
    bracket-eligible -- a vs b or b vs d (src/generate_responses.py,
@@ -430,7 +448,7 @@ another.
    sits on, that consistency is real evidence for family preference over
    capability-tracking -- a capability-tracking judge should flip which
    family it prefers when the capability gap reverses direction. Cost,
-   real dry run against the actual 80 items: **80 calls, $0.35.**
+   real dry run against the actual 80 items: **80 calls, $0.77.**
 
 3. **Free, a genuinely matched pair.** b_c (GPT-5.4 mini vs. Haiku 4.5, see
    the pairing note below) is the confound-lighter version of this same
@@ -488,14 +506,33 @@ average length I already have: ~343 tokens), and stated assumptions where
 it doesn't yet (response length ~150 tokens, judge output ~200 tokens,
 rubric output ~500 tokens -- all flat assumptions, labeled as such).
 
+**Correction, 2026-09-10: the Phase 1/2 rows below are real measurements;
+the Phase 3 rows are still the original, now-suspect flat assumptions.**
+The contamination probe's 40 real Sonnet-5 calls came back averaging 409
+output tokens against a 150-token assumption -- a 2.7x miss, not a
+rounding error, because Sonnet 5 writes full markdown-formatted answers by
+default even on a plain, unconstrained prompt. Every Phase 3 row below
+also assumes a Sonnet-5-family judge producing a SHORT verdict (200-500
+tokens) on an equally unconstrained prompt. That assumption has not been
+tested and, on the evidence above, has a real chance of being similarly
+wrong -- an unconstrained judge prompt could just as easily come back
+verbose. **Design lesson to carry into Phase 3, not yet applied here:**
+judge prompts should force brevity explicitly (a word/token limit stated
+in the prompt, or structured output via `output_config.format`) rather
+than assume a judge task is naturally terse. Until Phase 3 is actually
+built and priced against real judge calls the same way, treat the Phase 3
+subtotal as having the same order-of-magnitude uncertainty the Phase 1/2
+numbers just turned out to have -- plausibly 1-3x higher, not a number to
+budget against precisely.
+
 | Component | Calls | Est. cost |
 |---|---|---|
-| Core generation (4 conditions x 200 items, 5 pair types incl. b_c) | 800 | $1.17 |
-| Contamination probe (condition d x 40 disjoint items) | 40 | $0.06 |
+| Core generation (4 conditions x 200 items, 5 pair types incl. b_c) | 800 | $2.70 |
+| Contamination probe (condition d x 40 disjoint items) -- actually spent | 40 | $0.06* |
 | Memorization flagging (mechanical, code-only, reuses core-run data) | 0 | $0.00 |
-| Format-variance subset (2 alternate formats x 4 conditions x 50 items) | 400 | $0.58 |
-| Self-preference bracket generation (gpt-5.6-sol x 80 items) | 80 | $0.35 |
-| **Phase 1/2 subtotal** | **1,320** | **$2.16** |
+| Format-variance subset (2 alternate formats x 4 conditions x 50 items) | 400 | $1.35 |
+| Self-preference bracket generation (gpt-5.6-sol x 80 items) | 80 | $0.77 |
+| **Phase 1/2 subtotal (real, measured)** | **1,320** | **$4.88** |
 | Judge v1 baseline (Sonnet-5 judge x 200 pairs) | 200 | $0.72 |
 | Position-swap bias experiment | 200 | $0.72 |
 | Verbosity bias experiment (200 padding generations + 200 judge calls) | 400 | $1.42 |
@@ -503,12 +540,17 @@ rubric output ~500 tokens -- all flat assumptions, labeled as such).
 | Swap-averaging mitigation | 0 | $0.00 (reuses position-swap data) |
 | Rubric-decomposition mitigation | 200 | $1.32 |
 | Reference-guided grading mitigation | 200 | $0.78 |
-| **Phase 3 subtotal (rough order of magnitude)** | **1,600** | **~$7.12** |
-| **Total through Phase 3** | **~2,920** | **~$9.28** |
+| **Phase 3 subtotal (rough order of magnitude, unverified output-length risk above)** | **1,600** | **~$7.12** |
+| **Total through Phase 3** | **~2,920** | **~$11.99 nominal (plausibly $14-20 if Phase 3 judge output runs as verbose as Phase 1/2 generation did)** |
 
-Call it **under $12 all-in** with a buffer, and I will still ask before
-Phase 3 spending starts, with real numbers checked the same way these were
--- this table is a planning estimate, not a pre-authorization.
+Call it **under $15-20 all-in** with the correction above folded in, not
+the earlier "under $12." I will price Phase 3 against real judge calls the
+same way Phase 1/2 is now priced -- measured, not assumed -- before any of
+that spending starts, and will apply the brevity-forcing design lesson
+above when writing the judge prompt rather than repeat the mistake.
+*Contamination-probe cost is the one line above already actually spent,
+not estimated -- $0.06 was accurate, since a 40-call, low-value spend was
+worth just watching directly rather than re-estimating.
 
 ### 5. Power at n=40 per pair type (added 2026-09-09)
 

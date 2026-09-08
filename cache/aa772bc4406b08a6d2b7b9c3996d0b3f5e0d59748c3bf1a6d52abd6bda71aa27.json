@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841222784,
+  "item_id": "15408",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to Uninstall uTorrent on Windows 10\n\n## Method 1: Settings App\n1. Click **Start** and select **Settings** (gear icon)\n2. Go to **Apps** > **Apps & features**\n3. Scroll down or search for **uTorrent**\n4. Click on it, then select **Uninstall**\n5. Confirm the uninstall prompt\n6. Follow any additional on-screen instructions\n\n## Method 2: Control Panel\n1. Press **Windows key + R** to open Run\n2. Type `appwiz.cpl` and press Enter\n3. Find **uTorrent** in the list of installed programs\n4. Right-click and select **Uninstall** (or select it and click Uninstall at the top)\n5. Follow the uninstallation wizard\n\n## After Uninstalling (Clean-up steps)\n\nSome leftover files/folders may remain. To remove them:\n\n1. **Delete leftover folders:**\n   - `C:\\Users\\[YourUsername]\\AppData\\Roaming\\uTorrent`\n   - `C:\\Program Files (x86)\\uTorrent` (if it still exists)\n\n2. **Remove registry entries** (optional, for advanced users):\n   - Press **Windows + R**, type `regedit`\n   - Navigate to `HKEY_CURRENT_USER\\Software\\BitTorrent Inc`\n   - Delete the uTorrent-related keys (back up registry first)\n\n3. **Check for leftover torrents/downloads:**\n   - Review your Downloads folder for any incomplete torrent files\n\n## Tips\n- If uTorrent won't uninstall normally, try running the uninstaller as **Administrator**\n- You can also use third-party uninstaller tools (like Revo Uninstaller) for a more thorough clean, including registry entries\n- Restart your computer after uninstalling to ensure all processes are fully closed\n\nLet me know if you run into any issues during the process!"
+}

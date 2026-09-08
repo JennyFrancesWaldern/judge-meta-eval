@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841159683,
+  "item_id": "14316",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Fixing a Soft Close Toilet Lid\n\nHere are common fixes depending on the issue you're experiencing:\n\n## If the lid closes too fast/hard\n1. **Check the hinge caps** - Remove the plastic caps on the hinges (usually snap or twist off)\n2. **Look for adjustment screws** - Some models have small screws that control closing speed\n3. **Clean the hinge mechanism** - Dust or debris can interfere with the damper function\n\n## If the lid won't close slowly (drops normally)\n1. **Check hinge orientation** - Soft-close hinges are often side-specific (left/right); make sure they're installed correctly\n2. **Inspect for damage** - The dampening cylinder inside may be cracked or worn out\n3. **Ensure proper seating** - The lid/seat may not be properly clicked into the hinge mechanism\n\n## If the lid is loose or wobbly\n1. **Tighten the mounting bolts** underneath the seat where it attaches to the bowl\n2. **Check for worn hinge pins** - These may need replacing\n\n## If the hinges are broken\n1. **Remove the seat** - Usually lift a cover, unscrew or unclip the bolts underneath\n2. **Replace hinges** - Buy a replacement soft-close hinge kit compatible with your seat brand/model\n3**Reinstall** - Snap or bolt the new hinges into place\n\n## General Tips\n- Check the manufacturer's manual/website (Kohler, TOTO, Bemis, etc.) for model-specific instructions\n- Some hinges are sealed units and can't be repaired\u2014only replaced\n- If under warranty, contact the manufacturer before attempting repairs\n\nWould you like help identifying your specific toilet seat brand or troubleshooting a particular symptom?"
+}

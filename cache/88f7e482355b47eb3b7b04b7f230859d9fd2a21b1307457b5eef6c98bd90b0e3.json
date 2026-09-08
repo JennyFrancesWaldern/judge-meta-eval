@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841190300,
+  "item_id": "12205",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# How to Tie Common Rope Knots\n\nHere's a guide to some essential knots, from basic to more advanced:\n\n## 1. Overhand Knot (Basic)\nThe simplest knot - foundation for many others.\n- Make a loop with the rope\n- Pass the working end through the loop\n- Pull tight\n\n## 2. Square Knot (Reef Knot)\nUsed for joining two ropes of similar thickness.\n- Cross right end over left, tuck under, and pull\n- Cross left end over right, tuck under, and pull\n- Remember: \"right over left, left over right\"\n\n## 3. Bowline Knot\nCreates a secure loop that won't slip or jam (great for rescue situations).\n- Make a small loop in the rope (\"the rabbit hole\")\n- Pass the working end up through the loop (\"rabbit comes out of the hole\")\n- Wrap it around the standing line (\"runs around the tree\")\n- Push it back down through the original loop (\"back into the hole\")\n- Pull tight\n\n## 4. Clove Hitch\nQuick way to secure rope to a post or pole.\n- Wrap rope around the object\n- Cross over itself and wrap again\n- Tuck the end under the last wrap\n- Tighten\n\n## 5. Figure-8 Knot\nUsed in climbing; prevents rope from slipping through pulleys/carabiners.\n- Make a loop\n- Wrap the working end around the standing part\n- Thread it back through the original loop\n- Pull tight to form a figure-8 shape\n\n## 6. Taut-Line Hitch\nAdjustable knot great for tent lines.\n- Wrap the working end around a fixed object\n- Make two wraps around the standing line (inside the loop)\n- Make one more wrap outside those\n- Tighten - it will slide but hold under tension\n\n## Tips for Success:\n- **Practice slowly** at first, then build speed\n- **Leave enough working end** (tail) - usually 6-12 inches\n- **Dress the knot** - make sure strands aren't crossed or twisted awkwardly before fully tightening\n- **Test the knot** under light tension before relying on it\n- **Choose the right knot** for the job - some are for loops, some for joining rope, some for attaching to objects\n\nWould you like more detail on any specific knot, or knots for a particular purpose (camping, sailing, climbing, etc.)?"
+}

@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841201462,
+  "item_id": "15469",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Uses for Soybeans\n\n**Food Products**\n- Tofu, tempeh, miso, and natto\n- Soy milk and soy yogurt\n- Soy sauce and edamame (fresh soybeans)\n- Soybean oil for cooking\n- Textured vegetable protein (TVP) as a meat substitute\n- Soy flour for baking\n\n**Animal Feed**\n- Soybean meal is a major protein source for livestock, poultry, and fish farming (aquaculture)\n\n**Industrial Uses**\n- Biodiesel fuel production\n- Soy-based inks (printing)\n- Adhesives and glues\n- Plastics and biodegradable packaging materials\n- Candles (soy wax)\n- Lubricants and solvents\n- Crayons\n\n**Health & Personal Care**\n- Soy protein isolate in supplements\n- Soy lecithin used as an emulsifier in foods and cosmetics\n- Skincare products (soy extracts)\n\n**Agricultural Benefits**\n- Nitrogen fixation improves soil fertility in crop rotation systems\n- Cover crop to prevent soil erosion\n\nSoybeans are incredibly versatile due to their high protein and oil content, making them valuable across food, industrial, and agricultural sectors worldwide."
+}

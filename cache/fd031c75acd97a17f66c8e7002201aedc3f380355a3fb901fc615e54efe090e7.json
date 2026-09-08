@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841102658,
+  "item_id": "12229",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Transferring Music from iTunes to Android\n\nHere are several methods you can use:\n\n## Method 1: Manual USB Transfer\n1. Connect your Android phone to your computer via USB\n2. Locate your iTunes music folder (usually in Music/iTunes/iTunes Media/Music)\n3. Copy the music files\n4. Paste them into your Android's Music folder using File Explorer\n\n## Method 2: Google Play Music/YouTube Music Manager\n1. Use a desktop uploader tool to upload your iTunes library to Google's cloud\n2. Access your music through the app on your Android device\n3. Stream or download for offline listening\n\n## Method 3: Third-Party Sync Apps\nApps like **doubleTwist** can:\n- Read your iTunes library directly\n- Sync playlists and music to Android\n- Provide an iTunes-like interface on Android\n\n## Method 4: Cloud Storage Services\n1. Upload your iTunes music to Dropbox, Google Drive, or OneDrive\n2. Download or stream the files from your Android device\n\n## Method 5: DRM-Protected Content\n- If you purchased music with DRM protection (older purchases), you may need to burn to CD and re-rip, or use Apple Music's cross-platform app\n- Most iTunes purchases since 2009 are DRM-free (M4A/AAC format) and transfer easily\n\n## Quick Tips:\n- Check file formats \u2014 M4A files work fine on Android\n- For large libraries, USB transfer is often fastest\n- Consider using Apple Music app on Android if you're a subscriber\n\nWould you like more detailed steps for any of these methods?"
+}

@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841133468,
+  "item_id": "12374",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "# Health Benefits of Broccoli\n\nBroccoli is a nutritional powerhouse from the cruciferous vegetable family. Here are its key benefits:\n\n## Nutritional Value\n- Low in calories, high in fiber\n- Rich in vitamins C, K, and A\n- Good source of folate, potassium, and iron\n- Contains protein (more than most vegetables)\n\n## Health Benefits\n\n1. **Antioxidant Properties** - Contains sulforaphane and other compounds that help fight oxidative stress and inflammation\n\n2. **Cancer Prevention** - Glucosinolates and sulforaphane have been studied for their potential to reduce cancer risk, particularly for certain types\n\n3. **Heart Health** - Fiber, potassium, and antioxidants support cardiovascular health and may help lower cholesterol\n\n4. **Bone Health** - High vitamin K and calcium content support bone density\n\n5. **Digestive Health** - Fiber content promotes healthy digestion and gut bacteria\n\n6. **Immune Support** - Vitamin C content boosts immune function\n\n7. **Eye Health** - Contains lutein and zeaxanthin, beneficial for eye health\n\n8. **Blood Sugar Regulation** - Fiber and certain compounds may help stabilize blood sugar levels\n\n9. **Skin Health** - Vitamin C supports collagen production\n\n10. **Detoxification Support** - Compounds may help support the body's natural detox processes\n\n## Tips\n- Steaming preserves nutrients better than boiling\n- Eating it slightly undercooked (crisp-tender) retains more sulforaphane\n- Pairs well with mustard, horseradish, or other cruciferous vegetables to enhance sulforaphane activation\n\nWould you like more details on any specific benefit?"
+}

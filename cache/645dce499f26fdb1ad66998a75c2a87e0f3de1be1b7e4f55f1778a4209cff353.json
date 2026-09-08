@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841258600,
+  "item_id": "15291",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "When frying chicken and want to make sure it's completely cooked through, here's what works:\n\n**Best method: Use a meat thermometer**\n- Chicken is done when it reaches **165\u00b0F (74\u00b0C)** internally\n- Check the thickest part, avoiding bone\n\n**Tips for even cooking:**\n\n1. **Don't overcrowd the pan** - too many pieces lowers oil temperature and leads to uneven cooking\n\n2. **Keep oil temperature steady** - around 325-350\u00b0F (163-177\u00b0C). Too hot and the outside burns before the inside cooks; too cool and it gets greasy without cooking through\n\n3. **Cut pieces evenly** - uniform sizes cook at the same rate\n\n4. **Finish in the oven if needed** - if the outside is browned but you're worried about the inside, transfer to a 350\u00b0F oven for 10-15 minutes to finish cooking without burning the crust\n\n5. **Cover the pan partway through** - this traps heat and helps cook the interior, especially for bone-in pieces\n\n6. **Let it rest a few minutes** after frying - juices redistribute and cooking continues slightly\n\n**Visual/texture cues (less reliable than a thermometer):**\n- Juices run clear, not pink\n- Meat near the bone isn't pink\n- Firm texture when pressed, not squishy\n\nBone-in pieces like thighs and drumsticks take longer than boneless breasts, so adjust frying time accordingly. If you're frying multiple pieces, cut one open on a test piece to confirm doneness before serving the rest."
+}

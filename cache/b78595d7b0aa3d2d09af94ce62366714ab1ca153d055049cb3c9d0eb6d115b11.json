@@ -1,0 +1,14 @@
+{
+  "condition": "d",
+  "few_shot_draw": "zero_shot",
+  "generated_at_ms": 1788841152003,
+  "item_id": "14389",
+  "label": "ungrounded",
+  "model": "claude-sonnet-5",
+  "passage_included": false,
+  "prompt_format": "plain_v1",
+  "provider": "anthropic",
+  "seed": 0,
+  "temperature": 0.0,
+  "text": "I don't have access to real-time data, so I can't provide the current weather in Stuttgart, Germany.\n\nTo get accurate, up-to-date temperature information in Fahrenheit, I'd recommend checking:\n\n- **Weather websites**: Weather.com, AccuWeather, or Weather Underground\n- **Search engines**: Simply search \"Stuttgart weather\" on Google\n- **Weather apps**: Your phone's built-in weather app\n- **Voice assistants**: Siri, Google Assistant, or Alexa\n\nFor general context, Stuttgart has a temperate climate:\n- **Summer (June-August)**: Typically 65-80\u00b0F (18-27\u00b0C)\n- **Winter (December-February)**: Typically 30-40\u00b0F (-1 to 4\u00b0C)\n- **Spring/Fall**: Generally 45-65\u00b0F (7-18\u00b0C)\n\nIf you let me know the season or specific date you're interested in, I can share more general climate information, though for planning purposes (like packing for a trip), checking a live forecast would be best."
+}
