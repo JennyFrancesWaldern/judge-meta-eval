@@ -1,10 +1,13 @@
-.PHONY: setup run report test reproduce
+.PHONY: setup run report test reproduce label
 
 setup:
 	pip install -r requirements.txt
 
 test:
 	pytest tests/ -v
+
+label:
+	python -m src.labeling_server
 
 run:
 	python -m src.run

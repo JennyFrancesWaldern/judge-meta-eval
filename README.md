@@ -10,6 +10,27 @@ How much can an LLM judge be trusted on grounded-generation quality, and which b
     make test       # run the cache + determinism tests
     make reproduce  # run the full pipeline end to end from cache (not yet implemented)
 
+## How to label
+
+ANALYSIS_PLAN.md is approved. The labeling tool (src/labeling.py,
+src/labeling_server.py) is built and tested against synthetic fixtures --
+`make test` covers blinding (no model identity ever reaches the display
+payload) and resume-after-restart. It has not been run against real data:
+that needs `data/generated/response_pairs.json` to exist first, which in
+turn needs the response-generation step from ANALYSIS_PLAN.md section 2 to
+actually run (an approved ~$1 in API calls, not yet made -- see that file).
+
+Once response_pairs.json exists:
+
+    make label
+
+Opens a local blind pairwise comparison UI at http://127.0.0.1:5000. Saves
+incrementally to data/labels/labels.jsonl after every item; closing the tool
+and reopening it resumes exactly where you left off, with the same queue
+order and blinding it built the first time. A silent 10% repeat subset is
+mixed in for later intra-rater agreement -- it is not marked as a repeat in
+the UI.
+
 ## Layout
 
     CLAUDE.md          repo-specific context, imports shared rules
