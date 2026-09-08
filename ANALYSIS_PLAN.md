@@ -31,6 +31,29 @@ story in hindsight.
 No results exist yet. RESULTS.md says so explicitly and will continue to
 until there's something real to report.
 
+## The four conditions and five pair types, briefly
+
+Everything from here on uses this shorthand. The full generation design and
+the reasoning behind each choice is in "Response generation design," much
+further down -- this is just enough to follow the Open Questions and
+everything after without flipping back and forth.
+
+Every one of 200 source items gets four generated responses:
+
+- **(a) Strong, grounded** -- Claude Sonnet 5, given the source passage.
+- **(b) Moderate, grounded, cross-family** -- GPT-5.4 mini, given the
+  source passage.
+- **(c) Weaker model, grounded** -- Claude Haiku 4.5, given the source
+  passage.
+- **(d) Deliberately ungrounded** -- Claude Sonnet 5, source passage
+  withheld.
+
+Each item is shown to the human labeler as exactly one pair, cycling
+through five pair types: **a_b, a_c, a_d, b_d, b_c**. "Self-preference,"
+used throughout, means: does the judge favor Claude-family responses over
+GPT-family ones, tested on the three pair types that cross that line
+(a_b, b_d, b_c).
+
 ## Open questions right now
 
 Two things are unresolved as of this publish.

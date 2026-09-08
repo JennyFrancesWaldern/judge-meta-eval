@@ -1,12 +1,35 @@
 # judge-meta-eval
 
-How much can an LLM judge be trusted on grounded-generation quality, and which biases move the score?
+How much can an LLM judge be trusted to score grounded-generation quality,
+and which judge biases move the score enough to change a ranking, not just
+shift a number?
 
-**Status:** Analysis plan published, results pending. See
-[ANALYSIS_PLAN.md](ANALYSIS_PLAN.md) for the full pre-registered design,
-including two open questions still unresolved and the decisions log
-tracking what changed as the design was checked against real data. No
-results exist yet -- see [RESULTS.md](RESULTS.md).
+**What makes this worth a look:** decision rules fixed before any result
+exists (a 25% contamination threshold, set before the check ran); blind
+pairwise human labeling with a hidden repeat subset for measuring
+intra-rater agreement; a contamination check that runs before the main
+experiment, not one that shows up in limitations after the fact.
+
+**Status, as of 2026-09-11:** pre-registered design published, no results
+yet. Two things are open:
+
+- **Length/condition confound** -- unresolved. Response length may vary
+  systematically by generation condition, which would confound the
+  verbosity-bias measurement this project also plans to make. The main
+  generation run is held until this is settled.
+- **Contamination probe** -- generated, awaiting hand-scoring. The
+  decision rule was fixed in advance: below 25% memorization, proceed as
+  designed; at or above, the design changes before the main run, not
+  after.
+
+The full analysis plan -- dataset choice, cost, sample-size and power
+reasoning, every confound found and how it was addressed, and a decisions
+log tracking what changed and why as the design got checked against real
+data -- is the detail for anyone who wants it:
+**[ANALYSIS_PLAN.md](ANALYSIS_PLAN.md)**. No results exist yet; see
+[RESULTS.md](RESULTS.md).
+
+---
 
 ## How to run
 
