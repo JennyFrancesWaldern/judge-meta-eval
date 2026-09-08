@@ -1,0 +1,22 @@
+# Environment
+.venv/
+venv/
+.env
+.env.*
+
+# API keys / secrets
+*.key
+secrets.*
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Large intermediates
+*.parquet
+*.npz
+*.pkl
+*.pickle
+*.zip
+*.tar.gz
