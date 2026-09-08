@@ -176,41 +176,71 @@ Three candidates considered:
 
 ### 2. Response generation design and cost estimate
 
+**Revision, 2026-09-07:** the original version of this section used 2
+models (Sonnet 5, Haiku 4.5) across 3 conditions -- flagged during review as
+not a real spread, and worse, both models are Anthropic. That leaves no
+cross-family response for Phase 3's self-preference bias experiment ("does
+the judge favor its own family") to test against. Revised to 3 models
+across 4 conditions below. Recorded here rather than silently edited so the
+plan's history is visible.
+
 For each of 200 sampled MS MARCO QA items (passage + question), generate
-three responses -- fresh generations, not RAGTruth's bundled responses, so
+four responses -- fresh generations, not RAGTruth's bundled responses, so
 the quality spread and the "deliberately weak" condition are under my
 control:
 
 - **(a) Strong, grounded** -- Claude Sonnet 5, given passage + question,
-  prompted normally.
-- **(b) Weaker model, grounded** -- Claude Haiku 4.5, same passage +
+  prompted normally. Anthropic.
+- **(b) Moderate, grounded, cross-family** -- GPT-5.4 mini, same passage +
+  question. Exists specifically so a human-labeled pair with a non-Anthropic
+  response exists at all -- without it, Phase 3's self-preference test has
+  nothing to anchor to.
+- **(c) Weaker model, grounded** -- Claude Haiku 4.5, same passage +
   question. A genuine capability-driven quality spread rather than a
-  sabotaged prompt.
-- **(c) Deliberately ungrounded** -- Claude Sonnet 5, given ONLY the
+  sabotaged prompt. Anthropic.
+- **(d) Deliberately ungrounded** -- Claude Sonnet 5, given ONLY the
   question (passage withheld), forced to answer from parametric knowledge
   alone. Holds model capability constant and isolates the specific failure
   mode this project is about: did the response actually use the source.
+  Not a smaller model and not a truncated passage -- see the note on why
+  those two mechanisms are kept distinct, below.
 
-To stay inside the 200-comparison labeling budget, each item is paired once
-rather than all three ways: alternate items between an (a) vs (b) pair and
-an (a) vs (c) pair, so both failure modes get labeled coverage without
-exceeding 200 total comparisons.
+**Why not a degraded prompt or a truncated passage for the weak condition:**
+asking a capable model to deliberately answer worse produces stylistic
+tells (hedging, artificial simplicity) that no real deployment failure
+looks like, which would make the judge's job unrealistically easy. Cutting
+part of the passage muddies whether a resulting failure came from missing
+information or from the model handling what remained poorly. (c) and (d)
+are each a single, clean manipulation targeting a different failure mode:
+(c) is genuine capability-driven weakness, confounded with general fluency
+(this is exactly the "quality vs. groundedness conflation" confound below,
+which the rationale field exists to help separate); (d) is condition-driven
+ungroundedness with capability held constant. They are deliberately not
+interchangeable.
+
+**Pairing, to stay inside the 200-comparison labeling budget:** each item
+gets exactly one pair, not all six possible combinations. Items are split
+into four equal groups (50 each, assigned by item index mod 4) cycling
+through: (a vs b), (a vs c), (a vs d), (b vs d). This guarantees the
+cross-family pair (a vs b, and b vs d) gets real labeled coverage rather
+than being crowded out by same-family comparisons.
 
 **Cost estimate** (official per-million-token rates, checked directly
-against claude.com/pricing on 2026-09-07): assuming ~300 input tokens
-(passage + question + instructions) and ~150 output tokens per call,
-200 calls each for (a), (b), (c):
+against claude.com/pricing and the OpenAI API pricing docs on 2026-09-07):
+assuming ~300 input tokens (passage + question + instructions) and ~150
+output tokens per call, 200 calls each for (a), (b), (c), (d):
 
 | Condition | Model | Input cost | Output cost | Subtotal |
 |---|---|---|---|---|
 | (a) strong | Sonnet 5 ($2/$10 per M) | $0.12 | $0.30 | $0.42 |
-| (b) weak | Haiku 4.5 ($1/$5 per M) | $0.06 | $0.15 | $0.21 |
-| (c) ungrounded | Sonnet 5, no passage | $0.05 | $0.30 | $0.35 |
+| (b) moderate, cross-family | GPT-5.4 mini ($0.75/$4.50 per M) | $0.045 | $0.135 | $0.18 |
+| (c) weak | Haiku 4.5 ($1/$5 per M) | $0.06 | $0.15 | $0.21 |
+| (d) ungrounded | Sonnet 5, no passage | $0.05 | $0.30 | $0.35 |
 
-**Total: ~$1** for the full 600-generation response pool. Even with a 5-10x
-buffer for prompt iteration, retries, and the contamination probe, this
-stays under ~$10. Judge-scoring costs (Phase 3) are separate and will get
-their own estimate before anything is spent there.
+**Total: ~$1.20** for the full 800-generation response pool. Even with a
+5-10x buffer for prompt iteration, retries, and the contamination probe,
+this stays under ~$12. Judge-scoring costs (Phase 3) are separate and will
+get their own estimate before anything is spent there.
 
 ### 3. Administration conditions: sampled, not fully crossed
 

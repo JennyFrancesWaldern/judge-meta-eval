@@ -12,13 +12,30 @@ How much can an LLM judge be trusted on grounded-generation quality, and which b
 
 ## How to label
 
-ANALYSIS_PLAN.md is approved. The labeling tool (src/labeling.py,
-src/labeling_server.py) is built and tested against synthetic fixtures --
-`make test` covers blinding (no model identity ever reaches the display
-payload) and resume-after-restart. It has not been run against real data:
-that needs `data/generated/response_pairs.json` to exist first, which in
-turn needs the response-generation step from ANALYSIS_PLAN.md section 2 to
-actually run (an approved ~$1 in API calls, not yet made -- see that file).
+ANALYSIS_PLAN.md is approved. Three pieces are built and tested; the last
+step needs an API key and hasn't been run:
+
+1. `data/raw/source_passages.json` -- done. 200 real MS MARCO QA items,
+   fetched from RAGTruth's source data (src/prepare_dataset.py, no API key
+   needed, just reads public data).
+2. Response generation (src/generate_responses.py) -- written and tested
+   against synthetic fixtures, not yet run for real. Records the full
+   administration condition on every response, caches by that condition so
+   a rerun costs nothing already-done, and is resumable if it dies partway.
+   Check the cost first:
+
+       python -m src.generate_responses --dry-run
+
+   Last run against the real 200 items: 800 calls (4 conditions x 200
+   items), ~$1.17. Needs `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` set (a
+   `.env` file works) before running without `--dry-run` -- it fails loudly
+   rather than falling back to anything if a key is missing, and only checks
+   for a key right before a call it can't serve from cache.
+3. The labeling tool (src/labeling.py, src/labeling_server.py) -- built and
+   tested against synthetic fixtures. `make test` covers blinding (no model
+   identity ever reaches the display payload) and resume-after-restart. It
+   needs `data/generated/response_pairs.json` to exist, which step 2
+   produces.
 
 Once response_pairs.json exists:
 
