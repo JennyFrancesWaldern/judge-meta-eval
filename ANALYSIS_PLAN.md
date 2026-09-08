@@ -85,8 +85,10 @@ the first few practice items.
   is roughly +/-0.08 to 0.12. Adequate for a headline "moderate agreement,
   here's the interval" statement.
 - It is NOT adequate to stratify that agreement by subcondition (e.g.
-  "agreement specifically on the ungrounded-response pairs" cuts the
-  relevant n to ~65-100 and widens the interval substantially). Any
+  "agreement specifically on the ungrounded-response pairs," meaning a_d
+  and b_d together, is ~80 of the 200 -- updated from the original 4-pair-type
+  design's ~100 now that a 5th pair type (b_c) is in the mix -- and widens
+  the interval further still). Any
   subgroup breakdown in the writeup will carry a visibly wider interval or
   get flagged as underpowered rather than reported as if it were as precise
   as the headline number.
@@ -100,23 +102,46 @@ the first few practice items.
   is the tightly-constrained number; bias-flip-rate estimates can be much
   better powered.
 
-**Second-seed variance subset, added 2026-09-08.** The 800-call core
-generation is one draw per item per condition -- within-condition variance
-is n=1, so no variance component can be reported at all, only a point
-estimate. Adding a second draw at TEMPERATURE=0.0 (the main run's setting)
-would show essentially nothing, since near-deterministic decoding barely
-varies run to run -- a "second seed" there would measure almost nothing and
-create a false impression of having checked. Instead: a stratified 48-item
-subset (12 from each of the 4 pair-type groups, so no pair-type is blind to
-this), all 4 core conditions, redrawn at a second seed AND temperature 0.7.
-This is deliberately a different administration condition from the main
-run -- it measures **sampling variance at temperature 0.7**, not the
-variance of the actual temperature-0.0 labeled dataset. That's a real
-scope limit on what this buys: it lets me report "here is how much a
-single condition's response varies under resampling," which is better than
-no variance information, but it is not the same claim as "here is the
-variance of the dataset I actually labeled." Cost: 192 calls (48 items x 4
-conditions), ~$0.28.
+**Variance subset, revised 2026-09-09 -- format, not seed.** The original
+version of this note (2026-09-08) proposed a second seed at temperature 0.7
+on a 48-item subset, $0.28, flagged honestly as measuring "sampling
+variance at temperature 0.7," not the variance of the actual
+temperature-0.0 labeled dataset. Correct, but flagging a mismatch doesn't
+fix it: that subset would have sat in RESULTS.md looking like the
+METHODOLOGY.md variance commitment was satisfied when it wasn't. The
+committed concern is specifically that **administration conditions are a
+random effect and format/harness variance can exceed between-model
+variance** -- and prompt format is exactly the thing fixed at generation
+time in this design (see the administration-conditions section below),
+which is the top-ranked failure mode in the Unit-1 notes this project is
+built on, not a secondary one. A seed/temperature subset doesn't touch
+that gap at all.
+
+Replaced with a genuine format-variance subset: a stratified 50-item
+subset (10 from each of the 5 pair-type groups), all 4 core conditions,
+regenerated under 1-2 ALTERNATE prompt formats -- same items, same seed,
+same temperature as the main run, only the wording/ordering/verbosity of
+the instruction changes (passage-first vs. question-first, terse vs.
+explicit -- the same axes Sclar et al. vary). This directly measures
+whether format moves the responses, which is the thing actually named in
+METHODOLOGY.md.
+
+**Priced both ways:**
+- 1 alternate format: 200 calls, **$0.29** (real dry run against the
+  actual 50-item subset).
+- 2 alternate formats: 400 calls, **$0.58**.
+- (For reference, the original seed/temperature version priced at $0.28 for
+  a similar-sized subset -- comparable cost, wrong target.)
+
+Going with **2 alternate formats ($0.58)**: one comparison point can't
+distinguish "this particular reformulation happens to be similar" from
+"format doesn't matter here" -- two independent reformulations give at
+least a minimal spread to look at. If format variance turns out large
+relative to the model differences this project is trying to detect, that
+changes what the whole study can claim, and it needs to be known before
+labeling starts, not discovered after. If it turns out small, that itself
+is worth reporting -- it's evidence the fixed-format decision didn't cost
+much, which the original plan could only assert, not show.
 
 ## What result would tell me I'm wrong
 
@@ -160,6 +185,44 @@ conditions), ~$0.28.
   open and is not covered by this probe. Worth a similar cheap check before
   trusting any "grounded" framing, but is not gating the current spend
   decision the way the (d)-condition check is.
+
+  **The rate-vs-flags gap, addressed 2026-09-09.** The probe runs on items
+  disjoint from the 200-item labeling pool specifically to protect
+  blinding -- but that means it produces an overall RATE with no way to
+  say which of the 200 actual labeling items are contaminated. At, say,
+  15% (below the 25% threshold), the honest position was going to be
+  "proceed knowing roughly 15% of condition (d) isn't really ungrounded,
+  with no way to tell which items." That's not good enough on its own.
+
+  There is a way to do better without compromising blinding: a mechanical,
+  code-only check (src/memorization_flagging.py) run against the MAIN
+  pool's own condition-(d) responses -- already generated as part of the
+  800-call core run, so this costs nothing extra. It extracts distinctive,
+  hard-to-guess facts from each passage (phone numbers, dollar amounts,
+  percentages, 4+ digit numbers, multi-word proper-noun phrases) and checks
+  whether they appear verbatim in that item's own withheld-passage
+  response. No human ever looks at the withheld-passage text to produce
+  this flag -- it's regex-based text matching, not a judgment call -- so it
+  never touches what I see during labeling. This is different in kind from
+  the earlier rejection of an automated judge for the *general* research
+  question (that would be circular, since we have no validated judge);
+  checking for a literal phone number leaking through has no such
+  circularity problem.
+
+  Honest limits: this catches the easy, distinctive cases and will miss
+  memorization of diffuse, non-numeric content -- it under-counts, it
+  doesn't over-count, and it is a supplement to the disjoint-sample rate,
+  not a replacement for it.
+
+  **Revised plan below 25%:** proceed with the full run, AND run the
+  mechanical flag against the real 200-item pool once condition (d) exists,
+  AND report both the primary analysis (full 200 items) and a sensitivity
+  check with flagged items removed. That is a real answer with a number
+  attached, not a footnote saying contamination might be a problem.
+  Flagged items are never silently excluded pre-labeling -- excluding
+  based on an imperfect heuristic before seeing the data risks a selection
+  bias of its own, and it would shrink the labeling investment below the
+  n the sample-size section already sized carefully.
 - **Single labeler.** See scope limit above -- no inter-rater reliability is
   possible here, only intra-rater.
 - **Quality vs. groundedness conflation.** A genuinely weaker model's
@@ -258,27 +321,35 @@ interchangeable.
 
 **Pairing, to stay inside the 200-comparison labeling budget:** each item
 gets exactly one pair, not all six possible combinations. Items are split
-into four equal groups (50 each, assigned by item index mod 4) cycling
-through: (a vs b), (a vs c), (a vs d), (b vs d). This guarantees the
-cross-family pair (a vs b, and b vs d) gets real labeled coverage rather
-than being crowded out by same-family comparisons.
+into five equal groups (40 each, assigned by item index mod 5) cycling
+through: (a vs b), (a vs c), (a vs d), (b vs d), (b vs c). This guarantees
+the cross-family pairs (a vs b, b vs d, and now b vs c) get real labeled
+coverage rather than being crowded out by same-family comparisons.
 
-**Which 4 of the 6 possible pairs, and what that rules out.** The 4
-conditions allow 6 possible pairs; this design covers a_b, a_c, a_d, b_d
-and drops b_c and c_d. Concretely, that means I cannot get human-labeled
-data on:
-- **b vs c** (moderate cross-family vs. weak same-family): whether a human
-  -- or later, the judge -- prefers a weaker same-family response over a
-  stronger cross-family one. This is arguably a more direct self-preference
-  stress test than a_b, since it pits family against capability in the
-  opposite direction. Dropping it removes one of the more diagnostic
-  configurations from the human-anchored set.
-- **c vs d** (weak-grounded vs. ungrounded): which failure mode -- a
-  weaker model trying its best, or a strong model guessing without the
-  source -- looks worse to a human. Without this, I can't say anything
-  about whether humans (or the eventual judge) are better or worse at
-  detecting one failure mode than the other; I only know how each compares
-  to the strong condition (a) individually.
+**b vs c, added 2026-09-09.** Originally listed as a missing pair and
+correctly called out as the sharper self-preference test: GPT-5.4 mini
+against Haiku 4.5 -- two small, cheap models on opposite families, closer
+to capability-matched than anything else in this design (unlike a vs b,
+where Sonnet 5 is presumably the stronger model regardless of family).
+**This costs nothing extra in generation spend.** Conditions (b) and (c)
+are already generated for all 200 items regardless of which pair a given
+item is scheduled for -- adding a 5th pair type only changes which
+already-generated responses get shown to the labeler, not what gets
+generated. The actual cost is a labeling-design tradeoff, not a dollar
+one: 5 pair types over the same 200 items means 40 per type instead of 50,
+which is what changed in the sample-size section's per-subgroup CI
+discussion. Total labeling time is unaffected -- still ~200 items, ~11
+hours -- because this redistributes the existing 200, it does not add to
+them.
+
+**Which 5 of the 6 possible pairs, and the one that's still missing.**
+With b_c added, only **c vs d** (weak-grounded vs. ungrounded) remains
+uncovered. That means I still can't say which failure mode -- a weaker
+model trying its best, or a strong model guessing without the source --
+looks worse to a human; I only know how each compares to the strong
+condition (a) individually. Adding a 6th pair type would mean either more
+labeling time (not authorized) or thinning every group to 33-34 items
+(widening every subgroup CI further); left out for now on that basis.
 
 **Cost estimate** (official per-million-token rates, checked directly
 against claude.com/pricing and the OpenAI API pricing docs on 2026-09-07):
@@ -335,26 +406,33 @@ another.
    self-preference number needs to be interpreted against. This costs
    nothing beyond the already-approved labeling.
 
-2. **~$0.45, bracketing from the other side.** Added condition (e) =
+2. **~$0.35, bracketing from the other side.** Added condition (e) =
    `gpt-5.6-sol` (confirmed model ID, OpenAI's actual flagship, per the docs
-   check above), generated for the 100 items whose scheduled pair is
-   already cross-family (src/generate_responses.py, BRACKET_CONDITION).
-   Not human-labeled -- that would double those 100 items' labeling load,
-   which wasn't authorized -- but available in Phase 3 for the judge to
-   score automatically against (a) and (d). Logic: gpt-5.4-mini is
-   presumably weaker than Sonnet 5, and gpt-5.6-sol is presumably stronger.
-   If the judge prefers Claude responses regardless of which side of Sonnet
-   5 the OpenAI competitor sits on, that consistency is real evidence for
-   family preference over capability-tracking -- a capability-tracking
-   judge should flip which family it prefers when the capability gap
-   reverses direction. Cost, real dry run against the actual 100 items:
-   **100 calls, $0.45.**
+   check above), generated for the items whose scheduled pair is
+   bracket-eligible -- a vs b or b vs d (src/generate_responses.py,
+   BRACKET_CONDITION, BRACKET_ELIGIBLE_PAIR_TYPES). With 5 pair types now
+   (see b_c below), that's 80 items, not 100. Not human-labeled -- that
+   would add to those items' labeling load, which wasn't authorized -- but
+   available in Phase 3 for the judge to score automatically against (a)
+   and (d). Logic: gpt-5.4-mini is presumably weaker than Sonnet 5, and
+   gpt-5.6-sol is presumably stronger. If the judge prefers Claude
+   responses regardless of which side of Sonnet 5 the OpenAI competitor
+   sits on, that consistency is real evidence for family preference over
+   capability-tracking -- a capability-tracking judge should flip which
+   family it prefers when the capability gap reverses direction. Cost,
+   real dry run against the actual 80 items: **80 calls, $0.35.**
 
-Both together cost $0.45 (the free option requires no separate spend, just
-analysis of data already being collected) and are additive, not
-redundant: option 1 tells us how big the gap probably is for the mini
-comparison; option 2 tells us whether judge preference direction tracks
-that gap or ignores it.
+3. **Free, a genuinely matched pair.** b_c (GPT-5.4 mini vs. Haiku 4.5, see
+   the pairing note below) is the confound-lighter version of this same
+   test -- two small models, opposite families, without needing to guess
+   at a "flagship" bracket at all. It costs nothing beyond the labeling
+   already planned, since it's a redistribution of the existing 200 items
+   across one more pair type, not new items or new generation.
+
+All three are additive, not redundant: option 1 sizes the gap for the mini
+comparison; option 2 checks whether judge preference direction tracks a
+capability gap that reverses sign; option 3 is the same question asked
+with the least capability confound of any pair in the design.
 
 ### 3. Administration conditions: sampled, not fully crossed
 
@@ -376,10 +454,18 @@ since zero-shot generation is standard for the model tier being used here.
 
 **Cost of this choice, stated plainly:** this dataset cannot say whether
 the human-labeled ground truth itself would look different under a
-different generation administration. That's a real limitation, carried
-into the Confounds section above rather than left implicit.
+different generation administration. That's a real limitation -- but as of
+2026-09-09 it is no longer an unmeasured one: see the format-variance
+subset in the Sample-size section above, which directly tests how much
+responses move under 2 alternate, semantically equivalent formats, and the
+Confounds section, where this limitation lives alongside that result.
 
 ### 4. Total project cost estimate through Phase 3
+
+Revised 2026-09-09: format-variance subset replaces the seed/temperature
+subset (same rough cost, different and now-relevant target); b_c pairing
+added at no generation cost; self-preference bracket recomputed at 80
+items (not 100) now that there are 5 pair types instead of 4.
 
 Requested as one number, not per-phase. Phase 3 itself has not been
 formally planned or approved yet -- only sketched (judge v1, position
@@ -394,20 +480,21 @@ rubric output ~500 tokens -- all flat assumptions, labeled as such).
 
 | Component | Calls | Est. cost |
 |---|---|---|
-| Core generation (4 conditions x 200 items) | 800 | $1.17 |
+| Core generation (4 conditions x 200 items, 5 pair types incl. b_c) | 800 | $1.17 |
 | Contamination probe (condition d x 40 disjoint items) | 40 | $0.06 |
-| Second-seed variance subset (4 conditions x 48 items) | 192 | $0.28 |
-| Self-preference bracket generation (gpt-5.6-sol x 100 items) | 100 | $0.45 |
-| **Phase 1/2 subtotal** | **1,132** | **$1.96** |
+| Memorization flagging (mechanical, code-only, reuses core-run data) | 0 | $0.00 |
+| Format-variance subset (2 alternate formats x 4 conditions x 50 items) | 400 | $0.58 |
+| Self-preference bracket generation (gpt-5.6-sol x 80 items) | 80 | $0.35 |
+| **Phase 1/2 subtotal** | **1,320** | **$2.16** |
 | Judge v1 baseline (Sonnet-5 judge x 200 pairs) | 200 | $0.72 |
 | Position-swap bias experiment | 200 | $0.72 |
 | Verbosity bias experiment (200 padding generations + 200 judge calls) | 400 | $1.42 |
-| Self-preference judge scoring (a_b/b_d + a_e/e_d, 2 judges) | 400 | ~$2.16 |
+| Self-preference judge scoring (a_b/b_d + a_e/e_d bracket + b_c, 2 judges) | 400 | ~$2.16 |
 | Swap-averaging mitigation | 0 | $0.00 (reuses position-swap data) |
 | Rubric-decomposition mitigation | 200 | $1.32 |
 | Reference-guided grading mitigation | 200 | $0.78 |
 | **Phase 3 subtotal (rough order of magnitude)** | **1,600** | **~$7.12** |
-| **Total through Phase 3** | **~2,730** | **~$9.10** |
+| **Total through Phase 3** | **~2,920** | **~$9.28** |
 
 Call it **under $12 all-in** with a buffer, and I will still ask before
 Phase 3 spending starts, with real numbers checked the same way these were

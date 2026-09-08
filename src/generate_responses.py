@@ -2,17 +2,17 @@
 """Generate response pairs for judge-meta-eval labeling. See ANALYSIS_PLAN.md
 section 2 for the design and cost estimate this implements.
 
-Idempotent and resumable: every (item, condition, seed, temperature) call is
-cached in cache/, keyed on the full administration condition that would
-produce it. Rerunning after a crash re-reads whatever is already cached and
-only pays for what is missing -- it never re-calls or double-charges for a
-condition that already succeeded.
+Idempotent and resumable: every (item, condition, prompt_format, seed,
+temperature) call is cached in cache/, keyed on the full administration
+condition that would produce it. Rerunning after a crash re-reads whatever
+is already cached and only pays for what is missing -- it never re-calls or
+double-charges for a condition that already succeeded.
 
 Use --dry-run to see the exact call count and cost estimate for every
-component (core generation, the self-preference bracket, the variance
-subset) without making any calls and without needing an API key. Real runs
-fail loudly, lazily and per-call, if a required key is missing -- a run
-fully satisfied by cache never needs a key at all.
+component (core generation, the self-preference bracket, the format-
+variance subset) without making any calls and without needing an API key.
+Real runs fail loudly, lazily and per-call, if a required key is missing --
+a run fully satisfied by cache never needs a key at all.
 """
 import argparse
 import json
@@ -31,15 +31,17 @@ SOURCE_PASSAGES_PATH = REPO_ROOT / "data" / "raw" / "source_passages.json"
 ALL_RESPONSES_PATH = REPO_ROOT / "data" / "generated" / "all_responses.json"
 RESPONSE_PAIRS_PATH = REPO_ROOT / "data" / "generated" / "response_pairs.json"
 BRACKET_RESPONSES_PATH = REPO_ROOT / "data" / "generated" / "self_pref_bracket_responses.json"
-VARIANCE_RESPONSES_PATH = REPO_ROOT / "data" / "generated" / "variance_subset_responses.json"
+FORMAT_VARIANCE_RESPONSES_PATH = REPO_ROOT / "data" / "generated" / "format_variance_responses.json"
 
-# Fixed per ANALYSIS_PLAN.md section 3 (administration conditions are
-# deliberately NOT crossed during generation) -- recorded on every response
-# anyway, per the requirement that a constant is still a condition value.
-PROMPT_FORMAT = "plain_v1"
+# Few-shot draw is fixed per ANALYSIS_PLAN.md section 3 (zero-shot generation
+# is standard for this model tier) -- recorded on every response anyway,
+# since a constant is still a condition value. Prompt FORMAT is no longer
+# fixed -- see FORMAT_VARIANTS below and ANALYSIS_PLAN.md's 2026-09-09
+# revision.
 FEW_SHOT_DRAW = "zero_shot"
 TEMPERATURE = 0.0
 SEED = 0
+DEFAULT_PROMPT_FORMAT = "plain_v1"
 
 # See ANALYSIS_PLAN.md section 2, "Revision 2026-09-07" for why this is
 # 3 models / 4 conditions rather than the original 2/3.
@@ -50,17 +52,25 @@ CONDITIONS = {
     "d": {"provider": "anthropic", "model": "claude-sonnet-5", "passage_included": False, "label": "ungrounded"},
 }
 
-# Item index % 4 selects which two conditions are paired for human labeling.
-# Guarantees the cross-family pairs (a_b, b_d) get real coverage rather than
-# being crowded out by same-family comparisons -- see ANALYSIS_PLAN.md.
-PAIR_SCHEDULE = ["a_b", "a_c", "a_d", "b_d"]
-CROSS_FAMILY_PAIR_TYPES = {"a_b", "b_d"}
+# Item index % 5 selects which two conditions are paired for human labeling.
+# b_c added 2026-09-09: GPT-5.4 mini vs. Haiku 4.5 -- two small models on
+# opposite families, the closest thing to a capability-matched cross-family
+# comparison in this design (see ANALYSIS_PLAN.md). 200 items / 5 types = 40
+# each (was 50 each across 4 types) -- no change to total labeling time.
+PAIR_SCHEDULE = ["a_b", "a_c", "a_d", "b_d", "b_c"]
+
+# Pair-types eligible for the self-preference bracket (condition e). Deliberately
+# NOT the same set as "cross-family pairs" in general -- b_c is cross-family
+# too (b=OpenAI, c=Anthropic) but doesn't involve condition (a), so it isn't
+# part of the Sonnet-5-bracketing logic below. It's a separate, matched-tier
+# self-preference test in its own right.
+BRACKET_ELIGIBLE_PAIR_TYPES = {"a_b", "b_d"}
 
 # Self-preference bracket (ANALYSIS_PLAN.md section 2, "Revision 2026-09-08"):
 # gpt-5.4-mini and Claude Sonnet 5 are not a capability-matched cross-family
 # pair -- see that section for why price parity turned out not to mean
 # capability parity here. This condition is generated ONLY for the items
-# whose scheduled pair-type is cross-family, and is NOT added to human
+# whose scheduled pair-type is bracket-eligible, and is NOT added to human
 # labeling (it would double that subset's labeling load). It exists purely
 # so Phase 3 can compare the judge's family preference against a SECOND,
 # differently-tiered cross-family model, bracketing Sonnet 5 from the other
@@ -72,18 +82,53 @@ BRACKET_CONDITION = {
     "label": "cross_family_flagship_bracket",
 }
 
-# Second-seed variance subset (ANALYSIS_PLAN.md section on variance
-# components): a stratified 50-item subset, one item from every 4th
-# position across all 4 pair-type groups, redrawn under SECOND_SEED. Uses a
-# NONZERO temperature -- at TEMPERATURE = 0.0 a second seed would not
-# actually produce different output, so it would measure nothing. This
-# subset therefore measures sampling variance AT TEMPERATURE 0.7
-# specifically, not the (near-zero-by-construction) variance of the main
-# temperature-0.0 dataset. That distinction goes in ANALYSIS_PLAN.md, not
-# just here.
-SECOND_SEED = 1
-VARIANCE_SUBSET_TEMPERATURE = 0.7
-VARIANCE_SUBSET_SIZE = 50
+# Format-variance subset (ANALYSIS_PLAN.md, "Revision 2026-09-09" -- replaces
+# the original seed/temperature variance subset). METHODOLOGY.md's top-ranked
+# failure mode (per Unit 1 notes) is format/harness sensitivity, which can
+# exceed between-model variance -- and prompt format is exactly the thing
+# fixed at generation time in this design for labeling-budget reasons. A
+# second seed at nonzero temperature would have measured sampling variance,
+# not that. This measures the thing actually named in METHODOLOGY.md:
+# regenerate a stratified subset under alternate, semantically equivalent
+# prompt formats, same seed and temperature as the main run, and see how
+# much the responses move.
+FORMAT_VARIANCE_SUBSET_SIZE = 50
+
+
+def _plain_v1(item: dict, passage_included: bool) -> str:
+    if passage_included:
+        return (
+            f"Passage:\n{item['passage']}\n\n"
+            f"Question: {item['question']}\n\n"
+            "Answer the question using only the passage above."
+        )
+    return f"Question: {item['question']}\n\nAnswer from your own knowledge."
+
+
+def _instruction_first_v1(item: dict, passage_included: bool) -> str:
+    if passage_included:
+        return (
+            "Answer the following question using only the passage provided below.\n\n"
+            f"Question: {item['question']}\n\n"
+            f"Passage:\n{item['passage']}"
+        )
+    return f"Answer the following question using your own knowledge.\n\nQuestion: {item['question']}"
+
+
+def _qa_style_v1(item: dict, passage_included: bool) -> str:
+    if passage_included:
+        return f"{item['passage']}\n\nQ: {item['question']}\nA:"
+    return f"Q: {item['question']}\nA:"
+
+
+# Three semantically equivalent formats: differ in instruction wording,
+# ordering (passage-first vs. question-first), and verbosity -- the same
+# axes Sclar et al. vary. All ask for the same thing.
+FORMAT_VARIANTS = {
+    "plain_v1": _plain_v1,
+    "instruction_first_v1": _instruction_first_v1,
+    "qa_style_v1": _qa_style_v1,
+}
 
 ESTIMATED_OUTPUT_TOKENS = 150  # the response doesn't exist yet; this stays a flat assumption
 
@@ -100,7 +145,12 @@ PRICING_PER_M = {
 
 
 def build_cache_key(
-    item_id: str, condition_name: str, cond: dict, seed: int = SEED, temperature: float = TEMPERATURE
+    item_id: str,
+    condition_name: str,
+    cond: dict,
+    seed: int = SEED,
+    temperature: float = TEMPERATURE,
+    prompt_format: str = DEFAULT_PROMPT_FORMAT,
 ) -> str:
     """The full administration condition, as a stable JSON string. This is
     the cache key -- if it isn't in here, it can't be recovered from cache."""
@@ -111,7 +161,7 @@ def build_cache_key(
             "model": cond["model"],
             "provider": cond["provider"],
             "passage_included": cond["passage_included"],
-            "prompt_format": PROMPT_FORMAT,
+            "prompt_format": prompt_format,
             "few_shot_draw": FEW_SHOT_DRAW,
             "temperature": temperature,
             "seed": seed,
@@ -120,14 +170,8 @@ def build_cache_key(
     )
 
 
-def build_prompt(item: dict, cond: dict) -> str:
-    if cond["passage_included"]:
-        return (
-            f"Passage:\n{item['passage']}\n\n"
-            f"Question: {item['question']}\n\n"
-            "Answer the question using only the passage above."
-        )
-    return f"Question: {item['question']}\n\nAnswer from your own knowledge."
+def build_prompt(item: dict, cond: dict, prompt_format: str = DEFAULT_PROMPT_FORMAT) -> str:
+    return FORMAT_VARIANTS[prompt_format](item, cond["passage_included"])
 
 
 def call_model(provider: str, model: str, prompt: str, temperature: float) -> str:
@@ -180,21 +224,30 @@ def estimate_tokens(text: str) -> int:
     return max(1, len(text) // 4)
 
 
-def estimate_cost(items: list[dict], conditions: dict, seed: int = SEED, temperature: float = TEMPERATURE) -> dict:
+def estimate_cost(
+    items: list[dict],
+    conditions: dict,
+    seed: int = SEED,
+    temperature: float = TEMPERATURE,
+    prompt_format: str = DEFAULT_PROMPT_FORMAT,
+) -> dict:
     """Cost of whatever is NOT already cached, for the given items/conditions/
-    seed/temperature. Never makes a call. Input tokens are estimated from the
-    real prompt text; output tokens remain a flat assumption."""
+    seed/temperature/prompt_format. Never makes a call. Input tokens are
+    estimated from the real prompt text; output tokens remain a flat
+    assumption."""
     calls_needed = 0
     calls_cached = 0
     cost = 0.0
     for item in items:
         for condition_name, cond in conditions.items():
-            key = build_cache_key(item["item_id"], condition_name, cond, seed=seed, temperature=temperature)
+            key = build_cache_key(
+                item["item_id"], condition_name, cond, seed=seed, temperature=temperature, prompt_format=prompt_format
+            )
             if cache.get(key) is not None:
                 calls_cached += 1
                 continue
             calls_needed += 1
-            input_tokens = estimate_tokens(build_prompt(item, cond))
+            input_tokens = estimate_tokens(build_prompt(item, cond, prompt_format=prompt_format))
             in_price, out_price = PRICING_PER_M[cond["model"]]
             cost += (input_tokens / 1_000_000) * in_price
             cost += (ESTIMATED_OUTPUT_TOKENS / 1_000_000) * out_price
@@ -206,14 +259,21 @@ def estimate_cost(items: list[dict], conditions: dict, seed: int = SEED, tempera
 
 
 def generate_all(
-    items: list[dict], conditions: dict, dry_run: bool, seed: int = SEED, temperature: float = TEMPERATURE
+    items: list[dict],
+    conditions: dict,
+    dry_run: bool,
+    seed: int = SEED,
+    temperature: float = TEMPERATURE,
+    prompt_format: str = DEFAULT_PROMPT_FORMAT,
 ) -> dict:
     all_responses: dict[str, dict] = {}
     made_calls = 0
     for item in items:
         all_responses[item["item_id"]] = {}
         for condition_name, cond in conditions.items():
-            key = build_cache_key(item["item_id"], condition_name, cond, seed=seed, temperature=temperature)
+            key = build_cache_key(
+                item["item_id"], condition_name, cond, seed=seed, temperature=temperature, prompt_format=prompt_format
+            )
             cached_record = cache.get(key)
             if cached_record is not None:
                 all_responses[item["item_id"]][condition_name] = cached_record
@@ -221,7 +281,7 @@ def generate_all(
             if dry_run:
                 continue
             ensure_key_present(cond["provider"])
-            prompt = build_prompt(item, cond)
+            prompt = build_prompt(item, cond, prompt_format=prompt_format)
             text = call_model(cond["provider"], cond["model"], prompt, temperature)
             record = {
                 "text": text,
@@ -230,7 +290,7 @@ def generate_all(
                 "condition": condition_name,
                 "label": cond["label"],
                 "passage_included": cond["passage_included"],
-                "prompt_format": PROMPT_FORMAT,
+                "prompt_format": prompt_format,
                 "few_shot_draw": FEW_SHOT_DRAW,
                 "temperature": temperature,
                 "seed": seed,
@@ -266,16 +326,17 @@ def build_response_pairs(items: list[dict], all_responses: dict) -> list[dict]:
     return pairs
 
 
-def select_cross_family_items(items: list[dict]) -> list[dict]:
-    """The subset whose scheduled pair-type already involves the mini-tier
-    cross-family model -- these are the items the self-preference bracket
-    (gpt-5.6-sol) is generated for."""
-    return [item for i, item in enumerate(items) if PAIR_SCHEDULE[i % len(PAIR_SCHEDULE)] in CROSS_FAMILY_PAIR_TYPES]
+def select_bracket_items(items: list[dict]) -> list[dict]:
+    """The subset whose scheduled pair-type is bracket-eligible (involves
+    condition (a) against the mini-tier cross-family model) -- these are the
+    items the self-preference bracket (gpt-5.6-sol) is generated for."""
+    return [
+        item for i, item in enumerate(items) if PAIR_SCHEDULE[i % len(PAIR_SCHEDULE)] in BRACKET_ELIGIBLE_PAIR_TYPES
+    ]
 
 
-def select_variance_subset(items: list[dict], n: int = VARIANCE_SUBSET_SIZE) -> list[dict]:
-    """A stratified subset covering all 4 pair-type groups roughly evenly,
-    for the second-seed variance measurement."""
+def select_stratified_subset(items: list[dict], n: int) -> list[dict]:
+    """A subset covering all pair-type groups as evenly as possible."""
     groups: dict[str, list[dict]] = {p: [] for p in PAIR_SCHEDULE}
     for i, item in enumerate(items):
         groups[PAIR_SCHEDULE[i % len(PAIR_SCHEDULE)]].append(item)
@@ -291,9 +352,16 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="Print call count and cost, make no calls.")
     parser.add_argument(
         "--component",
-        choices=["core", "bracket", "variance", "all"],
+        choices=["core", "bracket", "format_variance", "all"],
         default="all",
         help="Which piece to run/estimate.",
+    )
+    parser.add_argument(
+        "--format-variants",
+        type=int,
+        choices=[1, 2],
+        default=2,
+        help="How many ALTERNATE formats (beyond the main plain_v1) to test in the format-variance subset.",
     )
     args = parser.parse_args()
 
@@ -308,37 +376,41 @@ def main() -> int:
     items = json.loads(SOURCE_PASSAGES_PATH.read_text(encoding="utf-8"))
     set_seed(SEED)
 
-    cross_family_items = select_cross_family_items(items)
-    variance_items = select_variance_subset(items)
+    bracket_items = select_bracket_items(items)
+    format_variance_items = select_stratified_subset(items, FORMAT_VARIANCE_SUBSET_SIZE)
+    alternate_formats = list(FORMAT_VARIANTS.keys())[1 : 1 + args.format_variants]
 
     components = []
     if args.component in ("core", "all"):
-        components.append(("core (4 conditions x 200 items)", items, CONDITIONS, SEED, TEMPERATURE))
+        components.append(("core (4 conditions x 200 items)", items, CONDITIONS, SEED, TEMPERATURE, DEFAULT_PROMPT_FORMAT))
     if args.component in ("bracket", "all"):
         components.append(
             (
-                f"self-preference bracket (gpt-5.6-sol x {len(cross_family_items)} items)",
-                cross_family_items,
+                f"self-preference bracket (gpt-5.6-sol x {len(bracket_items)} items)",
+                bracket_items,
                 {"e": BRACKET_CONDITION},
                 SEED,
                 TEMPERATURE,
+                DEFAULT_PROMPT_FORMAT,
             )
         )
-    if args.component in ("variance", "all"):
-        components.append(
-            (
-                f"variance subset (4 conditions x {len(variance_items)} items, seed={SECOND_SEED}, temp={VARIANCE_SUBSET_TEMPERATURE})",
-                variance_items,
-                CONDITIONS,
-                SECOND_SEED,
-                VARIANCE_SUBSET_TEMPERATURE,
+    if args.component in ("format_variance", "all"):
+        for fmt in alternate_formats:
+            components.append(
+                (
+                    f"format variance ({fmt}, 4 conditions x {len(format_variance_items)} items)",
+                    format_variance_items,
+                    CONDITIONS,
+                    SEED,
+                    TEMPERATURE,
+                    fmt,
+                )
             )
-        )
 
     if args.dry_run:
         grand_total = 0.0
-        for label, comp_items, comp_conditions, seed, temperature in components:
-            stats = estimate_cost(comp_items, comp_conditions, seed=seed, temperature=temperature)
+        for label, comp_items, comp_conditions, seed, temperature, prompt_format in components:
+            stats = estimate_cost(comp_items, comp_conditions, seed=seed, temperature=temperature, prompt_format=prompt_format)
             print(f"--- {label} ---")
             print(f"  Already cached: {stats['calls_cached']}")
             print(f"  Calls needed: {stats['calls_needed']}")
@@ -347,11 +419,13 @@ def main() -> int:
         print(f"=== Grand total across selected components: ${grand_total:.4f} ===")
         return 0
 
-    for label, comp_items, comp_conditions, seed, temperature in components:
-        result = generate_all(comp_items, comp_conditions, dry_run=False, seed=seed, temperature=temperature)
+    for label, comp_items, comp_conditions, seed, temperature, prompt_format in components:
+        result = generate_all(
+            comp_items, comp_conditions, dry_run=False, seed=seed, temperature=temperature, prompt_format=prompt_format
+        )
         print(f"{label}: made {result['made_calls']} new API calls this run.")
 
-        if comp_conditions is CONDITIONS and seed == SEED and temperature == TEMPERATURE:
+        if comp_conditions is CONDITIONS and prompt_format == DEFAULT_PROMPT_FORMAT:
             pairs = build_response_pairs(items, result["all_responses"])
             ALL_RESPONSES_PATH.parent.mkdir(parents=True, exist_ok=True)
             ALL_RESPONSES_PATH.write_text(json.dumps(result["all_responses"], indent=2), encoding="utf-8")
@@ -361,8 +435,12 @@ def main() -> int:
             BRACKET_RESPONSES_PATH.write_text(json.dumps(result["all_responses"], indent=2), encoding="utf-8")
             print(f"  Wrote bracket responses to {BRACKET_RESPONSES_PATH}")
         else:
-            VARIANCE_RESPONSES_PATH.write_text(json.dumps(result["all_responses"], indent=2), encoding="utf-8")
-            print(f"  Wrote variance-subset responses to {VARIANCE_RESPONSES_PATH}")
+            existing = {}
+            if FORMAT_VARIANCE_RESPONSES_PATH.exists():
+                existing = json.loads(FORMAT_VARIANCE_RESPONSES_PATH.read_text(encoding="utf-8"))
+            existing[prompt_format] = result["all_responses"]
+            FORMAT_VARIANCE_RESPONSES_PATH.write_text(json.dumps(existing, indent=2), encoding="utf-8")
+            print(f"  Wrote format-variance responses ({prompt_format}) to {FORMAT_VARIANCE_RESPONSES_PATH}")
 
     return 0
 

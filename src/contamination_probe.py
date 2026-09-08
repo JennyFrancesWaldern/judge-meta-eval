@@ -50,7 +50,7 @@ SOURCE_PASSAGES_PATH = REPO_ROOT / "data" / "raw" / "source_passages.json"
 PROBE_OUTPUT_PATH = REPO_ROOT / "outputs" / "contamination_probe.json"
 
 PROBE_SIZE = 40
-PROBE_SEED = 2  # distinct from SEED (0) and SECOND_SEED (1), so probe sampling never collides
+PROBE_SEED = 2  # distinct from the main run's SEED (0), so probe sampling never collides
 UNGROUNDED_CONDITION = CONDITIONS["d"]
 
 # Decision rule, stated in advance per METHODOLOGY.md ("state the decision

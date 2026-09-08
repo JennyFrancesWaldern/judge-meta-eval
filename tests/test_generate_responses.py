@@ -70,15 +70,15 @@ def test_dry_run_reflects_partial_cache():
     assert stats["calls_needed"] == 2 * len(gr.CONDITIONS) - 1
 
 
-def test_dry_run_respects_seed_and_temperature_in_key():
+def test_dry_run_respects_prompt_format_in_key():
     items = make_fixture_items(1)
     cond = gr.CONDITIONS["a"]
-    # Cached under the default seed/temperature...
-    key = gr.build_cache_key(items[0]["item_id"], "a", cond, seed=gr.SEED, temperature=gr.TEMPERATURE)
-    cache.set(key, {"text": "cached at seed 0"})
+    # Cached under the default format...
+    key = gr.build_cache_key(items[0]["item_id"], "a", cond, prompt_format="plain_v1")
+    cache.set(key, {"text": "cached under plain_v1"})
 
-    # ...should NOT be treated as cached under a different seed/temperature.
-    stats = gr.estimate_cost(items, {"a": cond}, seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE)
+    # ...should NOT be treated as cached under a different format.
+    stats = gr.estimate_cost(items, {"a": cond}, prompt_format="instruction_first_v1")
     assert stats["calls_cached"] == 0
     assert stats["calls_needed"] == 1
 
@@ -140,7 +140,7 @@ def test_condition_metadata_round_trips_through_cache(counting_call_model):
 
     assert record["model"] == gr.CONDITIONS["a"]["model"]
     assert record["provider"] == gr.CONDITIONS["a"]["provider"]
-    assert record["prompt_format"] == gr.PROMPT_FORMAT
+    assert record["prompt_format"] == gr.DEFAULT_PROMPT_FORMAT
     assert record["few_shot_draw"] == gr.FEW_SHOT_DRAW
     assert record["temperature"] == gr.TEMPERATURE
     assert record["seed"] == gr.SEED
@@ -149,16 +149,13 @@ def test_condition_metadata_round_trips_through_cache(counting_call_model):
     assert "generated_at_ms" in record
 
 
-def test_variance_subset_record_carries_second_seed_and_temperature(counting_call_model):
+def test_format_variance_record_carries_alternate_format(counting_call_model):
     items = make_fixture_items(1)
-    gr.generate_all(items, gr.CONDITIONS, dry_run=False, seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE)
+    gr.generate_all(items, gr.CONDITIONS, dry_run=False, prompt_format="instruction_first_v1")
 
-    key = gr.build_cache_key(
-        items[0]["item_id"], "a", gr.CONDITIONS["a"], seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE
-    )
+    key = gr.build_cache_key(items[0]["item_id"], "a", gr.CONDITIONS["a"], prompt_format="instruction_first_v1")
     record = cache.get(key)
-    assert record["seed"] == gr.SECOND_SEED
-    assert record["temperature"] == gr.VARIANCE_SUBSET_TEMPERATURE
+    assert record["prompt_format"] == "instruction_first_v1"
 
     # And it must NOT collide with the main run's cache entry for the same item/condition.
     main_key = gr.build_cache_key(items[0]["item_id"], "a", gr.CONDITIONS["a"])
@@ -175,6 +172,26 @@ def test_grounded_condition_prompt_includes_passage():
     items = make_fixture_items(1)
     prompt = gr.build_prompt(items[0], gr.CONDITIONS["a"])
     assert items[0]["passage"] in prompt
+
+
+def test_all_format_variants_are_semantically_asking_the_same_thing(counting_call_model):
+    """Each format must still convey the passage (when included) and the
+    question -- only wording/order/verbosity should differ."""
+    items = make_fixture_items(1)
+    for fmt in gr.FORMAT_VARIANTS:
+        grounded_prompt = gr.build_prompt(items[0], gr.CONDITIONS["a"], prompt_format=fmt)
+        assert items[0]["passage"] in grounded_prompt
+        assert items[0]["question"] in grounded_prompt
+
+        ungrounded_prompt = gr.build_prompt(items[0], gr.CONDITIONS["d"], prompt_format=fmt)
+        assert items[0]["passage"] not in ungrounded_prompt
+        assert items[0]["question"] in ungrounded_prompt
+
+
+def test_format_variants_produce_different_prompt_text():
+    items = make_fixture_items(1)
+    prompts = {fmt: gr.build_prompt(items[0], gr.CONDITIONS["a"], prompt_format=fmt) for fmt in gr.FORMAT_VARIANTS}
+    assert len(set(prompts.values())) == len(prompts)  # all distinct
 
 
 # --- Fail loudly on missing key ---
@@ -213,13 +230,25 @@ def test_fully_cached_run_needs_no_key(monkeypatch, counting_call_model):
 
 # --- Pairing schedule ---
 
-def test_pair_schedule_cycles_through_four_types(counting_call_model):
-    items = make_fixture_items(8)
+def test_pair_schedule_cycles_through_five_types(counting_call_model):
+    items = make_fixture_items(10)
     result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
     pairs = gr.build_response_pairs(items, result["all_responses"])
 
     pair_types = [p["pair_type"] for p in pairs]
-    assert pair_types == ["a_b", "a_c", "a_d", "b_d"] * 2
+    assert pair_types == ["a_b", "a_c", "a_d", "b_d", "b_c"] * 2
+
+
+def test_pair_schedule_divides_200_evenly_into_five_groups():
+    assert 200 % len(gr.PAIR_SCHEDULE) == 0
+    assert 200 // len(gr.PAIR_SCHEDULE) == 40
+
+
+def test_b_c_pair_is_cross_family_but_not_bracket_eligible():
+    b_provider = gr.CONDITIONS["b"]["provider"]
+    c_provider = gr.CONDITIONS["c"]["provider"]
+    assert b_provider != c_provider  # b_c genuinely is cross-family
+    assert "b_c" not in gr.BRACKET_ELIGIBLE_PAIR_TYPES  # but not part of the (a)-vs-OpenAI bracket
 
 
 def test_response_pairs_carry_full_condition_metadata_but_display_hides_it(counting_call_model):
@@ -248,13 +277,13 @@ def test_build_response_pairs_skips_incomplete_items():
 
 # --- Self-preference bracket selection ---
 
-def test_select_cross_family_items_matches_a_b_and_b_d_slots():
-    items = make_fixture_items(8)
-    # PAIR_SCHEDULE = ["a_b", "a_c", "a_d", "b_d"], cross-family = a_b (idx 0), b_d (idx 3)
-    cross_family = gr.select_cross_family_items(items)
-    expected_ids = {items[i]["item_id"] for i in range(8) if i % 4 in (0, 3)}
-    assert {item["item_id"] for item in cross_family} == expected_ids
-    assert len(cross_family) == 4  # half of 8
+def test_select_bracket_items_matches_a_b_and_b_d_slots_only():
+    items = make_fixture_items(10)
+    # PAIR_SCHEDULE = ["a_b", "a_c", "a_d", "b_d", "b_c"], bracket-eligible = a_b (idx 0), b_d (idx 3)
+    bracket_items = gr.select_bracket_items(items)
+    expected_ids = {items[i]["item_id"] for i in range(10) if i % 5 in (0, 3)}
+    assert {item["item_id"] for item in bracket_items} == expected_ids
+    assert len(bracket_items) == 4  # 2 of every 5
 
 
 def test_bracket_condition_is_a_different_model_than_core_b():
@@ -262,20 +291,19 @@ def test_bracket_condition_is_a_different_model_than_core_b():
     assert gr.BRACKET_CONDITION["provider"] == "openai"
 
 
-# --- Variance subset selection ---
+# --- Stratified subset selection (used by the format-variance subset) ---
 
-def test_variance_subset_is_stratified_across_pair_types():
-    items = make_fixture_items(40)  # 10 per pair-type group
-    subset = gr.select_variance_subset(items, n=20)  # 5 per group
+def test_stratified_subset_covers_all_pair_types_evenly():
+    items = make_fixture_items(50)  # 10 per pair-type group (5 groups)
+    subset = gr.select_stratified_subset(items, n=25)  # 5 per group
     counts = {}
     for i, item in enumerate(items):
         if item in subset:
-            pair_type = gr.PAIR_SCHEDULE[i % 4]
+            pair_type = gr.PAIR_SCHEDULE[i % 5]
             counts[pair_type] = counts.get(pair_type, 0) + 1
     assert all(c == 5 for c in counts.values())
     assert set(counts.keys()) == set(gr.PAIR_SCHEDULE)
 
 
-def test_variance_subset_uses_second_seed_distinct_from_main():
-    assert gr.SECOND_SEED != gr.SEED
-    assert gr.VARIANCE_SUBSET_TEMPERATURE != gr.TEMPERATURE  # must be nonzero to show any variation at all
+def test_format_variance_subset_size_divides_evenly():
+    assert gr.FORMAT_VARIANCE_SUBSET_SIZE % len(gr.PAIR_SCHEDULE) == 0
