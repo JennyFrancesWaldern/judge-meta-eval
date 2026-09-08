@@ -47,7 +47,7 @@ def counting_call_model(monkeypatch):
 
 def test_dry_run_counts_all_as_needed_when_cache_empty():
     items = make_fixture_items(3)
-    stats = gr.estimate_cost(items)
+    stats = gr.estimate_cost(items, gr.CONDITIONS)
     assert stats["calls_cached"] == 0
     assert stats["calls_needed"] == 3 * len(gr.CONDITIONS)
     assert stats["estimated_cost_usd"] > 0
@@ -55,7 +55,7 @@ def test_dry_run_counts_all_as_needed_when_cache_empty():
 
 def test_dry_run_never_calls_the_model(counting_call_model):
     items = make_fixture_items(3)
-    gr.generate_all(items, dry_run=True)
+    gr.generate_all(items, gr.CONDITIONS, dry_run=True)
     assert counting_call_model == []
 
 
@@ -65,9 +65,22 @@ def test_dry_run_reflects_partial_cache():
     key = gr.build_cache_key(items[0]["item_id"], "a", cond)
     cache.set(key, {"text": "already generated"})
 
-    stats = gr.estimate_cost(items)
+    stats = gr.estimate_cost(items, gr.CONDITIONS)
     assert stats["calls_cached"] == 1
     assert stats["calls_needed"] == 2 * len(gr.CONDITIONS) - 1
+
+
+def test_dry_run_respects_seed_and_temperature_in_key():
+    items = make_fixture_items(1)
+    cond = gr.CONDITIONS["a"]
+    # Cached under the default seed/temperature...
+    key = gr.build_cache_key(items[0]["item_id"], "a", cond, seed=gr.SEED, temperature=gr.TEMPERATURE)
+    cache.set(key, {"text": "cached at seed 0"})
+
+    # ...should NOT be treated as cached under a different seed/temperature.
+    stats = gr.estimate_cost(items, {"a": cond}, seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE)
+    assert stats["calls_cached"] == 0
+    assert stats["calls_needed"] == 1
 
 
 # --- Caching and resume ---
@@ -78,7 +91,7 @@ def test_cache_hit_skips_the_call(counting_call_model):
         key = gr.build_cache_key(items[0]["item_id"], condition_name, cond)
         cache.set(key, {"text": "pre-cached", "condition": condition_name})
 
-    result = gr.generate_all(items, dry_run=False)
+    result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
 
     assert counting_call_model == []
     assert result["made_calls"] == 0
@@ -88,12 +101,12 @@ def test_cache_hit_skips_the_call(counting_call_model):
 def test_resume_does_not_recall_or_double_charge(counting_call_model):
     items = make_fixture_items(2)
 
-    first = gr.generate_all(items, dry_run=False)
+    first = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
     assert first["made_calls"] == 2 * len(gr.CONDITIONS)
     calls_after_first_run = len(counting_call_model)
 
     # Simulate a restart: call generate_all again against the same cache.
-    second = gr.generate_all(items, dry_run=False)
+    second = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
 
     assert second["made_calls"] == 0
     assert len(counting_call_model) == calls_after_first_run  # no new calls at all
@@ -104,12 +117,12 @@ def test_partial_run_then_resume_completes_without_recalling(monkeypatch, counti
 
     # Simulate dying partway through: only process the first item, as if the
     # process were killed after item 0.
-    gr.generate_all(items[:1], dry_run=False)
+    gr.generate_all(items[:1], gr.CONDITIONS, dry_run=False)
     calls_after_partial = len(counting_call_model)
     assert calls_after_partial == len(gr.CONDITIONS)
 
     # Resume against the full item list.
-    result = gr.generate_all(items, dry_run=False)
+    result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
 
     # Only the two new items' conditions should have made fresh calls.
     assert result["made_calls"] == 2 * len(gr.CONDITIONS)
@@ -120,7 +133,7 @@ def test_partial_run_then_resume_completes_without_recalling(monkeypatch, counti
 
 def test_condition_metadata_round_trips_through_cache(counting_call_model):
     items = make_fixture_items(1)
-    gr.generate_all(items, dry_run=False)
+    gr.generate_all(items, gr.CONDITIONS, dry_run=False)
 
     key = gr.build_cache_key(items[0]["item_id"], "a", gr.CONDITIONS["a"])
     record = cache.get(key)
@@ -134,6 +147,22 @@ def test_condition_metadata_round_trips_through_cache(counting_call_model):
     assert record["item_id"] == items[0]["item_id"]
     assert record["passage_included"] == gr.CONDITIONS["a"]["passage_included"]
     assert "generated_at_ms" in record
+
+
+def test_variance_subset_record_carries_second_seed_and_temperature(counting_call_model):
+    items = make_fixture_items(1)
+    gr.generate_all(items, gr.CONDITIONS, dry_run=False, seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE)
+
+    key = gr.build_cache_key(
+        items[0]["item_id"], "a", gr.CONDITIONS["a"], seed=gr.SECOND_SEED, temperature=gr.VARIANCE_SUBSET_TEMPERATURE
+    )
+    record = cache.get(key)
+    assert record["seed"] == gr.SECOND_SEED
+    assert record["temperature"] == gr.VARIANCE_SUBSET_TEMPERATURE
+
+    # And it must NOT collide with the main run's cache entry for the same item/condition.
+    main_key = gr.build_cache_key(items[0]["item_id"], "a", gr.CONDITIONS["a"])
+    assert cache.get(main_key) is None
 
 
 def test_ungrounded_condition_prompt_excludes_passage():
@@ -150,11 +179,10 @@ def test_grounded_condition_prompt_includes_passage():
 
 # --- Fail loudly on missing key ---
 
-def test_missing_anthropic_key_fails_loudly(monkeypatch):
+def test_missing_key_fails_loudly(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     with pytest.raises(RuntimeError, match="ANTHROPIC_API_KEY"):
-        gr.check_required_keys(gr.CONDITIONS)
+        gr.ensure_key_present("anthropic")
 
 
 def test_missing_key_check_happens_before_any_call(monkeypatch, counting_call_model):
@@ -162,21 +190,32 @@ def test_missing_key_check_happens_before_any_call(monkeypatch, counting_call_mo
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     items = make_fixture_items(1)
     with pytest.raises(RuntimeError):
-        gr.generate_all(items, dry_run=False)
+        gr.generate_all(items, gr.CONDITIONS, dry_run=False)
     assert counting_call_model == []
 
 
-def test_present_keys_do_not_raise(monkeypatch):
+def test_present_key_does_not_raise(monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
-    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    gr.check_required_keys(gr.CONDITIONS)  # should not raise
+    gr.ensure_key_present("anthropic")  # should not raise
+
+
+def test_fully_cached_run_needs_no_key(monkeypatch, counting_call_model):
+    items = make_fixture_items(1)
+    gr.generate_all(items, gr.CONDITIONS, dry_run=False)  # populate cache with fake keys present
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    # Fully served from cache now -- must succeed with no key at all.
+    result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
+    assert result["made_calls"] == 0
 
 
 # --- Pairing schedule ---
 
 def test_pair_schedule_cycles_through_four_types(counting_call_model):
     items = make_fixture_items(8)
-    result = gr.generate_all(items, dry_run=False)
+    result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
     pairs = gr.build_response_pairs(items, result["all_responses"])
 
     pair_types = [p["pair_type"] for p in pairs]
@@ -187,7 +226,7 @@ def test_response_pairs_carry_full_condition_metadata_but_display_hides_it(count
     from src.labeling import entry_to_display
 
     items = make_fixture_items(1)
-    result = gr.generate_all(items, dry_run=False)
+    result = gr.generate_all(items, gr.CONDITIONS, dry_run=False)
     pairs = gr.build_response_pairs(items, result["all_responses"])
 
     pair = pairs[0]
@@ -205,3 +244,38 @@ def test_build_response_pairs_skips_incomplete_items():
     all_responses = {items[0]["item_id"]: {"a": {"text": "only this one"}}}
     pairs = gr.build_response_pairs(items, all_responses)
     assert pairs == []
+
+
+# --- Self-preference bracket selection ---
+
+def test_select_cross_family_items_matches_a_b_and_b_d_slots():
+    items = make_fixture_items(8)
+    # PAIR_SCHEDULE = ["a_b", "a_c", "a_d", "b_d"], cross-family = a_b (idx 0), b_d (idx 3)
+    cross_family = gr.select_cross_family_items(items)
+    expected_ids = {items[i]["item_id"] for i in range(8) if i % 4 in (0, 3)}
+    assert {item["item_id"] for item in cross_family} == expected_ids
+    assert len(cross_family) == 4  # half of 8
+
+
+def test_bracket_condition_is_a_different_model_than_core_b():
+    assert gr.BRACKET_CONDITION["model"] != gr.CONDITIONS["b"]["model"]
+    assert gr.BRACKET_CONDITION["provider"] == "openai"
+
+
+# --- Variance subset selection ---
+
+def test_variance_subset_is_stratified_across_pair_types():
+    items = make_fixture_items(40)  # 10 per pair-type group
+    subset = gr.select_variance_subset(items, n=20)  # 5 per group
+    counts = {}
+    for i, item in enumerate(items):
+        if item in subset:
+            pair_type = gr.PAIR_SCHEDULE[i % 4]
+            counts[pair_type] = counts.get(pair_type, 0) + 1
+    assert all(c == 5 for c in counts.values())
+    assert set(counts.keys()) == set(gr.PAIR_SCHEDULE)
+
+
+def test_variance_subset_uses_second_seed_distinct_from_main():
+    assert gr.SECOND_SEED != gr.SEED
+    assert gr.VARIANCE_SUBSET_TEMPERATURE != gr.TEMPERATURE  # must be nonzero to show any variation at all

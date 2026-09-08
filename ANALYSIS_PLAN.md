@@ -37,6 +37,15 @@ Two related but distinct things:
    response-model identity changes the judge's preferred response -- against
    the human-labeled baseline preference for that pair.
 
+**Self-preference scope limit, stated plainly (2026-09-08):** with one
+cross-family model pair in the core design, this project **detects a
+difference but can't attribute it**. If the judge prefers Sonnet 5 over
+GPT-5.4 mini responses, that is equally consistent with "the judge favors
+its own family" and "GPT-5.4 mini is genuinely the weaker response," and
+the four-condition design on its own cannot separate those two
+explanations. See "Self-preference confound" below for what does and
+doesn't fix this, and at what cost.
+
 **Important scope limit:** there is one labeler (me). "Judge-human
 agreement" in this project means judge-agreement-with-a-single-labeler,
 bounded above by that labeler's own intra-rater consistency (measured via a
@@ -91,6 +100,24 @@ the first few practice items.
   is the tightly-constrained number; bias-flip-rate estimates can be much
   better powered.
 
+**Second-seed variance subset, added 2026-09-08.** The 800-call core
+generation is one draw per item per condition -- within-condition variance
+is n=1, so no variance component can be reported at all, only a point
+estimate. Adding a second draw at TEMPERATURE=0.0 (the main run's setting)
+would show essentially nothing, since near-deterministic decoding barely
+varies run to run -- a "second seed" there would measure almost nothing and
+create a false impression of having checked. Instead: a stratified 48-item
+subset (12 from each of the 4 pair-type groups, so no pair-type is blind to
+this), all 4 core conditions, redrawn at a second seed AND temperature 0.7.
+This is deliberately a different administration condition from the main
+run -- it measures **sampling variance at temperature 0.7**, not the
+variance of the actual temperature-0.0 labeled dataset. That's a real
+scope limit on what this buys: it lets me report "here is how much a
+single condition's response varies under resampling," which is better than
+no variance information, but it is not the same claim as "here is the
+variance of the dataset I actually labeled." Cost: 192 calls (48 items x 4
+conditions), ~$0.28.
+
 ## What result would tell me I'm wrong
 
 - If judge-human kappa looks reasonable but is statistically
@@ -109,19 +136,30 @@ the first few practice items.
 
 ## Confounds
 
-- **Source-passage contamination.** The leading dataset candidate
-  (RAGTruth) draws its QA passages from MS MARCO (~2016) and its
-  summarization passages from CNN/DailyMail (~2015-16) -- both almost
-  certainly present in frontier model pretraining data by now. A model
-  could produce a "well-grounded-looking" answer from memorized knowledge
-  rather than by actually using the provided passage, which would inflate
-  apparent quality independent of real grounding behavior. Mitigation:
-  before generating anything, run a verbatim-recall probe (ask the
-  generation models to continue an unseen-to-them snippet of candidate
-  source passages) and report what it finds, per METHODOLOGY.md's
-  contamination-check requirement. If recall is high, scope the item pool
-  toward the "Recent News" subset or flag the limitation explicitly rather
-  than proceeding as if the passages were unseen.
+- **Source-passage contamination on the weak condition, specifically.**
+  MS MARCO is from 2016 and has almost certainly been in frontier
+  pretraining data for years. This isn't just a general contamination
+  caveat -- it's a design problem for condition (d): withholding the
+  passage is only a valid "ungrounded" manipulation if the model doesn't
+  already know the answer. For a memorized item, (d) silently stops being
+  ungrounded and the condition becomes a mix of genuinely-degraded and
+  secretly-fine responses labeled as one thing. Concrete check, run before
+  the full spend (src/contamination_probe.py, not yet executed): generate
+  condition (d) only, on 40 items disjoint from the 200-item labeling pool
+  (so nothing here is later shown to me during blind labeling), and I score
+  each by hand for whether the withheld-passage answer is still correct --
+  not with an automated scorer, since we don't have a validated one yet and
+  using one here would be circular. Decision rule, fixed in advance: below
+  25% memorization, proceed and report the rate in Limitations; at or above
+  25%, the ungrounded condition changes before the full run rather than
+  proceeding with a footnote. Cost: 40 calls, ~$0.06.
+
+  A second, distinct contamination question -- can the generation models
+  recite the passages verbatim, which would inflate the *grounded*
+  conditions (a, b, c) rather than invalidate the ungrounded one -- remains
+  open and is not covered by this probe. Worth a similar cheap check before
+  trusting any "grounded" framing, but is not gating the current spend
+  decision the way the (d)-condition check is.
 - **Single labeler.** See scope limit above -- no inter-rater reliability is
   possible here, only intra-rater.
 - **Quality vs. groundedness conflation.** A genuinely weaker model's
@@ -225,6 +263,23 @@ through: (a vs b), (a vs c), (a vs d), (b vs d). This guarantees the
 cross-family pair (a vs b, and b vs d) gets real labeled coverage rather
 than being crowded out by same-family comparisons.
 
+**Which 4 of the 6 possible pairs, and what that rules out.** The 4
+conditions allow 6 possible pairs; this design covers a_b, a_c, a_d, b_d
+and drops b_c and c_d. Concretely, that means I cannot get human-labeled
+data on:
+- **b vs c** (moderate cross-family vs. weak same-family): whether a human
+  -- or later, the judge -- prefers a weaker same-family response over a
+  stronger cross-family one. This is arguably a more direct self-preference
+  stress test than a_b, since it pits family against capability in the
+  opposite direction. Dropping it removes one of the more diagnostic
+  configurations from the human-anchored set.
+- **c vs d** (weak-grounded vs. ungrounded): which failure mode -- a
+  weaker model trying its best, or a strong model guessing without the
+  source -- looks worse to a human. Without this, I can't say anything
+  about whether humans (or the eventual judge) are better or worse at
+  detecting one failure mode than the other; I only know how each compares
+  to the strong condition (a) individually.
+
 **Cost estimate** (official per-million-token rates, checked directly
 against claude.com/pricing and the OpenAI API pricing docs on 2026-09-07):
 assuming ~300 input tokens (passage + question + instructions) and ~150
@@ -237,10 +292,69 @@ output tokens per call, 200 calls each for (a), (b), (c), (d):
 | (c) weak | Haiku 4.5 ($1/$5 per M) | $0.06 | $0.15 | $0.21 |
 | (d) ungrounded | Sonnet 5, no passage | $0.05 | $0.30 | $0.35 |
 
-**Total: ~$1.20** for the full 800-generation response pool. Even with a
-5-10x buffer for prompt iteration, retries, and the contamination probe,
-this stays under ~$12. Judge-scoring costs (Phase 3) are separate and will
-get their own estimate before anything is spent there.
+**Total: ~$1.20** for the full 800-generation response pool. Confirmed by an
+actual dry run against the real 200-item RAGTruth sample (not the flat
+token assumption above): **$1.17**, using real prompt text. Even with a
+5-10x buffer for prompt iteration and retries, this stays under ~$12.
+Judge-scoring costs (Phase 3) are separate -- see the total-cost section
+near the end of this file.
+
+### 2b. Self-preference confound: investigation and what it costs to reduce
+
+Raised in review: with a single cross-family model (b), family and
+capability are confounded. If GPT-5.4 mini is weaker than Sonnet 5, a judge
+preferring Claude responses is indistinguishable from a judge preferring
+better responses. Confirmed -- see the scope-limit note near the top of
+this document, in the requested words: **this design detects a difference
+but can't attribute it.**
+
+**What "buy a capability-matched cross-family model" turned out to mean, on
+checking OpenAI's actual docs (not memory) on 2026-09-08:** price parity is
+not capability parity. `gpt-5.6-terra` is priced almost identically to
+Sonnet 5 ($2/$12 vs. $2/$10 per million tokens), which looks like an
+obvious fix -- but OpenAI's own model page describes Terra as roughly
+corresponding to "the mini model tier used in earlier GPT-5 families."
+Their actual flagship is `gpt-5.6-sol` ($4/$20), described as "a flagship
+model ... corresponds to the unsuffixed model tier." Meanwhile Sonnet 5 is
+Anthropic's mid tier, not their flagship (Opus 5 and Fable 5.1 sit above
+it). There is no benchmark I can point to that establishes Sonnet 5 and any
+specific OpenAI model as equivalently capable -- vendor tier names and
+prices are not a reliable cross-vendor capability scale. So no single model
+swap "buys" a confirmed clean comparison; it only trades one guess for
+another.
+
+**What this project does about it, at two different costs:**
+
+1. **Free, using data already being collected.** The 200-item human-labeled
+   set already includes 100 a_b and b_d pairs. Once labeled, the human
+   win-rate on those pairs is itself an empirical estimate of how
+   comparable (a) and (b) actually look to a person -- not a vendor
+   tier-name assumption. If it comes back near 50%, the existing
+   cross-family pair is validated as roughly matched after the fact; if
+   skewed, that skew itself becomes the capability-gap estimate the
+   self-preference number needs to be interpreted against. This costs
+   nothing beyond the already-approved labeling.
+
+2. **~$0.45, bracketing from the other side.** Added condition (e) =
+   `gpt-5.6-sol` (confirmed model ID, OpenAI's actual flagship, per the docs
+   check above), generated for the 100 items whose scheduled pair is
+   already cross-family (src/generate_responses.py, BRACKET_CONDITION).
+   Not human-labeled -- that would double those 100 items' labeling load,
+   which wasn't authorized -- but available in Phase 3 for the judge to
+   score automatically against (a) and (d). Logic: gpt-5.4-mini is
+   presumably weaker than Sonnet 5, and gpt-5.6-sol is presumably stronger.
+   If the judge prefers Claude responses regardless of which side of Sonnet
+   5 the OpenAI competitor sits on, that consistency is real evidence for
+   family preference over capability-tracking -- a capability-tracking
+   judge should flip which family it prefers when the capability gap
+   reverses direction. Cost, real dry run against the actual 100 items:
+   **100 calls, $0.45.**
+
+Both together cost $0.45 (the free option requires no separate spend, just
+analysis of data already being collected) and are additive, not
+redundant: option 1 tells us how big the gap probably is for the mini
+comparison; option 2 tells us whether judge preference direction tracks
+that gap or ignores it.
 
 ### 3. Administration conditions: sampled, not fully crossed
 
@@ -264,3 +378,37 @@ since zero-shot generation is standard for the model tier being used here.
 the human-labeled ground truth itself would look different under a
 different generation administration. That's a real limitation, carried
 into the Confounds section above rather than left implicit.
+
+### 4. Total project cost estimate through Phase 3
+
+Requested as one number, not per-phase. Phase 3 itself has not been
+formally planned or approved yet -- only sketched (judge v1, position
+swap, verbosity padding, self-preference, three mitigations) -- so the
+judge-side figures below are a rough order of magnitude, not a committed
+budget, built the same way as everything else here: real per-token pricing,
+input-token estimates from the real 200-item data where the object being
+priced already exists (the judge prompt includes the real passage, whose
+average length I already have: ~343 tokens), and stated assumptions where
+it doesn't yet (response length ~150 tokens, judge output ~200 tokens,
+rubric output ~500 tokens -- all flat assumptions, labeled as such).
+
+| Component | Calls | Est. cost |
+|---|---|---|
+| Core generation (4 conditions x 200 items) | 800 | $1.17 |
+| Contamination probe (condition d x 40 disjoint items) | 40 | $0.06 |
+| Second-seed variance subset (4 conditions x 48 items) | 192 | $0.28 |
+| Self-preference bracket generation (gpt-5.6-sol x 100 items) | 100 | $0.45 |
+| **Phase 1/2 subtotal** | **1,132** | **$1.96** |
+| Judge v1 baseline (Sonnet-5 judge x 200 pairs) | 200 | $0.72 |
+| Position-swap bias experiment | 200 | $0.72 |
+| Verbosity bias experiment (200 padding generations + 200 judge calls) | 400 | $1.42 |
+| Self-preference judge scoring (a_b/b_d + a_e/e_d, 2 judges) | 400 | ~$2.16 |
+| Swap-averaging mitigation | 0 | $0.00 (reuses position-swap data) |
+| Rubric-decomposition mitigation | 200 | $1.32 |
+| Reference-guided grading mitigation | 200 | $0.78 |
+| **Phase 3 subtotal (rough order of magnitude)** | **1,600** | **~$7.12** |
+| **Total through Phase 3** | **~2,730** | **~$9.10** |
+
+Call it **under $12 all-in** with a buffer, and I will still ask before
+Phase 3 spending starts, with real numbers checked the same way these were
+-- this table is a planning estimate, not a pre-authorization.
