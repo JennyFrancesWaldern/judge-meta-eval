@@ -6,6 +6,7 @@ pending one of them. Nothing below has been run.*
 
 <!-- status: plan published, results pending -->
 <!-- headline: not yet available -->
+<!-- repo_public: true -->
 
 ## Headline result
 
