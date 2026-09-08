@@ -2,7 +2,11 @@
 
 How much can an LLM judge be trusted on grounded-generation quality, and which biases move the score?
 
-**Status:** Scaffolded -- no experiments run yet.
+**Status:** Analysis plan published, results pending. See
+[ANALYSIS_PLAN.md](ANALYSIS_PLAN.md) for the full pre-registered design,
+including two open questions still unresolved and the decisions log
+tracking what changed as the design was checked against real data. No
+results exist yet -- see [RESULTS.md](RESULTS.md).
 
 ## How to run
 
@@ -26,8 +30,12 @@ step needs an API key and hasn't been run:
 
        python -m src.generate_responses --dry-run
 
-   Last run against the real 200 items: 800 calls (4 conditions x 200
-   items), ~$1.17. Needs `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` set (a
+   Dry run against the real 200 items: 800 calls (4 conditions x 200
+   items), ~$2.70 (revised after the real contamination-probe calls showed
+   output length was underestimated by 2.7x -- see ANALYSIS_PLAN.md's
+   decisions log). **Held as of this writing** pending a length/condition
+   confound check -- see ANALYSIS_PLAN.md's Open Questions. Needs
+   `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` set (a
    `.env` file works) before running without `--dry-run` -- it fails loudly
    rather than falling back to anything if a key is missing, and only checks
    for a key right before a call it can't serve from cache.
