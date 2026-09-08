@@ -22,3 +22,9 @@ How much can an LLM judge be trusted on grounded-generation quality, and which b
     cache/             cached API responses so a rerun is cheap
     outputs/           pipeline outputs
     tests/             cache and determinism tests
+
+## License scope
+
+The MIT license in this repo covers the code only. It does not cover the
+contents of data/labels/ or data/generated/ -- that data carries no license
+grant here and should not be assumed reusable.
